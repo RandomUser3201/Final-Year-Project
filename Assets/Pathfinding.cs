@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Pathfinding : MonoBehaviour
 {
@@ -10,30 +11,37 @@ public class Pathfinding : MonoBehaviour
     private Grid grid;
     private List<Node> path;
     private int currentNodeIndex = 0;
-    Vector3 lastTargetPosition;
+    private NavMeshAgent agent;
+    private Vector3 lastTargetPosition;
 
     void Start()
     {
         grid = FindObjectOfType<Grid>();
+        agent = seeker.GetComponent<NavMeshAgent>();
+
         if (grid == null)
         {
             Debug.LogError("Grid component is missing!");
-            Debug.LogError("Grid component is not available.");
         }
-        
+        if (agent == null)
+        {
+            Debug.LogError("NavMeshAgent component is missing!");
+        }
+
         lastTargetPosition = target.position;
     }
 
     void Update()
     {
+        // Recalculate the path if the target has moved significantly
         if (Vector3.Distance(lastTargetPosition, target.position) > 0.1f)
         {
             FindPath(seeker.position, target.position);
             lastTargetPosition = target.position;
         }
+
         FollowPath();
     }
-
 
     // Finds a path from the seeker to the target
     void FindPath(Vector3 startPos, Vector3 targetPos)
@@ -49,7 +57,7 @@ public class Pathfinding : MonoBehaviour
             return;
         }
 
-        // open and closed lists for A* search
+        // A* pathfinding
         List<Node> openSet = new List<Node> { startNode };
         HashSet<Node> closedSet = new HashSet<Node>();
         path = new List<Node>();
@@ -107,48 +115,29 @@ public class Pathfinding : MonoBehaviour
         path.Reverse();
         currentNodeIndex = 0;
 
-        if (path.Count == 0)
+        grid.HighlightPath(path);
+
+        // pass the path to NavMeshAgent
+        if (path.Count > 0)
         {
-            Debug.LogWarning("Path is empty retracing.");
-        }
-        else
-        {
-            Debug.Log($"Path retraced with" +  path.Count + " nodes.");
+            List<Vector3> navPath = new List<Vector3>();
             foreach (var node in path)
             {
-                Debug.Log($"Node in path: {node.worldPosition}");
+                navPath.Add(node.worldPosition);
             }
+
+            // follow the calculated path using navmesh
+            agent.SetPath(CreateNavMeshPath(navPath));
         }
     }
 
-    // moves the seeker along the path
-    void FollowPath()
+    // grid path into a NavMeshPath for the agent
+    NavMeshPath CreateNavMeshPath(List<Vector3> positions)
     {
-        if (path == null || path.Count == 0)
-        {
-            Debug.LogWarning("Path is empty, cannot follow.");
-            return;
-        }
-
-        if (currentNodeIndex < path.Count)
-        {
-            Node currentNode = path[currentNodeIndex];
-            Vector3 targetPosition = currentNode.worldPosition;
-
-            seeker.position = Vector3.MoveTowards(seeker.position, targetPosition, speed * Time.deltaTime);
-
-            if (Vector3.Distance(seeker.position, targetPosition) < 0.1f)
-            {
-                Debug.Log("Reached node " + currentNodeIndex);
-                currentNodeIndex++;
-            }
-        }
-        else
-        {
-            Debug.Log("Reached target!");
-        }
+        NavMeshPath navPath = new NavMeshPath();
+        agent.CalculatePath(positions[positions.Count - 1], navPath);
+        return navPath;
     }
-
 
     // calculates the distance between two nodes
     int GetDistance(Node nodeA, Node nodeB)
@@ -156,5 +145,20 @@ public class Pathfinding : MonoBehaviour
         int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
         int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
         return dstX > dstY ? 14 * dstY + 10 * (dstX - dstY) : 14 * dstX + 10 * (dstY - dstX);
+    }
+
+    void FollowPath()
+    {
+        if (path == null || currentNodeIndex >= path.Count) return;
+
+        Node targetNode = path[currentNodeIndex];
+        Vector3 targetPosition = targetNode.worldPosition;
+
+        seeker.position = Vector3.MoveTowards(seeker.position, targetPosition, speed * Time.deltaTime);
+
+        if (Vector3.Distance(seeker.position, targetPosition) < 0.1f)
+        {
+            currentNodeIndex++;
+        }
     }
 }
