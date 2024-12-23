@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
         cameraTransform.position = transform.position - cameraTransform.forward * distanceFromPlayer;
 
-        Debug.Log("drag rayline");
+        //Debug.Log("drag rayline");
         Debug.DrawRay(transform.position, transform.forward * debugLineLength, Color.red);
 
     }

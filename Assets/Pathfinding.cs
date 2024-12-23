@@ -13,6 +13,9 @@ public class Pathfinding : MonoBehaviour
     private int currentNodeIndex = 0;
     private NavMeshAgent agent;
     private Vector3 lastTargetPosition;
+    private float pathThreshold = 1f;
+
+    private bool pathfindingEnabled = false;
 
     void Start()
     {
@@ -33,15 +36,23 @@ public class Pathfinding : MonoBehaviour
 
     void Update()
     {
-        // Recalculate the path if the target has moved significantly
-        if (Vector3.Distance(lastTargetPosition, target.position) > 0.1f)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            FindPath(seeker.position, target.position);
-            lastTargetPosition = target.position;
+            pathfindingEnabled = !pathfindingEnabled;
         }
 
+        if (pathfindingEnabled)
+        {
+            // Recalculate the path if the target has moved significantly
+            if (Vector3.Distance(lastTargetPosition, target.position) > pathThreshold)
+            {
+                FindPath(seeker.position, target.position);
+                lastTargetPosition = target.position;
+            }
+        }
         FollowPath();
     }
+
 
     // Finds a path from the seeker to the target
     void FindPath(Vector3 startPos, Vector3 targetPos)
@@ -112,10 +123,14 @@ public class Pathfinding : MonoBehaviour
             path.Add(currentNode);
             currentNode = currentNode.parent;
         }
+
         path.Reverse();
-        currentNodeIndex = 0;
+
+        // tested - using this will start make the enemy start from the first node as opposed to the last one, each time the player moves the enemy will go further.
+        //currentNodeIndex = Mathf.Min(currentNodeIndex, path.Count - 1);
 
         grid.HighlightPath(path);
+
 
         // pass the path to NavMeshAgent
         if (path.Count > 0)
@@ -129,6 +144,8 @@ public class Pathfinding : MonoBehaviour
             // follow the calculated path using navmesh
             agent.SetPath(CreateNavMeshPath(navPath));
         }
+
+
     }
 
     // grid path into a NavMeshPath for the agent
@@ -149,16 +166,24 @@ public class Pathfinding : MonoBehaviour
 
     void FollowPath()
     {
-        if (path == null || currentNodeIndex >= path.Count) return;
+        if (path == null || path.Count == 0) return;
 
-        Node targetNode = path[currentNodeIndex];
-        Vector3 targetPosition = targetNode.worldPosition;
-
-        seeker.position = Vector3.MoveTowards(seeker.position, targetPosition, speed * Time.deltaTime);
-
-        if (Vector3.Distance(seeker.position, targetPosition) < 0.1f)
+        if (currentNodeIndex < path.Count)
         {
-            currentNodeIndex++;
+            Node targetNode = path[currentNodeIndex];
+            Vector3 targetPosition = targetNode.worldPosition;
+
+            seeker.position = Vector3.MoveTowards(seeker.position, targetPosition, speed * Time.deltaTime);
+
+            if (Vector3.Distance(seeker.position, targetPosition) < 1f)
+            {
+                currentNodeIndex++;
+            }
+        }
+
+        else
+        {
+            seeker.position = Vector3.MoveTowards(seeker.position, target.position, speed * Time.deltaTime);
         }
     }
 }

@@ -125,8 +125,9 @@ public class Grid : MonoBehaviour
                 Gizmos.color = (n.walkable) ? Color.white : Color.red;
 
                 if (n.isPathNode)
+                {
                     Gizmos.color = Color.green;
-
+                }
                 Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
