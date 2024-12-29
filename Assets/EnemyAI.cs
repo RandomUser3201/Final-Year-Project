@@ -20,18 +20,22 @@ public class EnemyAI : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
-    private enum EnemyState { Patrol, Chase, Attack }
+    public enum EnemyState { Patrol, Chase, Attack }
     private EnemyState currentState;
 
+    private Pathfinding pathfinding;
+    public bool currentlyChasing = false;
 
     private void Awake()
     {
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
+        pathfinding = GetComponent<Pathfinding>();
     }
 
     void Start()
     {
+        //pathfinding.enabled = false;
         currentState = EnemyState.Patrol;
     }
 
@@ -50,7 +54,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 else if (playerInAttackRange && playerInSightRange)
                 {
-                    Debug.Log("Patrol 2");
+                    Debug.Log("");
                     TransitionToState(EnemyState.Attack);
                 }
                 else
@@ -71,7 +75,7 @@ public class EnemyAI : MonoBehaviour
                     Debug.Log("Chase 2");
                     TransitionToState(EnemyState.Attack);
                 }
-                else
+                else if (playerInSightRange)
                 {
                     Debug.Log("Chase 3");
                     Chase();
@@ -96,6 +100,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Patrol()
     {
+        agent.enabled = true;
         Debug.Log("Patrolling");
 
         if (!walkPointSet)
@@ -107,7 +112,8 @@ public class EnemyAI : MonoBehaviour
         {
             agent.SetDestination(walkPoint);
 
-            if (Vector3.Distance(transform.position, walkPoint) < 1f)
+            // normal value was 1, changed to 10, to solve problem of walkpoint positioning on obstacles.
+            if (Vector3.Distance(transform.position, walkPoint) < 6f)
             {
                 walkPointSet = false;
             }
@@ -116,26 +122,73 @@ public class EnemyAI : MonoBehaviour
 
     private void SearchWalkPoint()
     {
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
+        for (int walkPointAttempts = 0; walkPointAttempts < 2; walkPointAttempts++)
+        { 
+            float randomZ = Random.Range(-walkPointRange, walkPointRange);
+            float randomX = Random.Range(-walkPointRange, walkPointRange);
 
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+            walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, theGround))
-        {
-            walkPointSet = true;
+            if (NavMesh.SamplePosition(walkPoint, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                if (Physics.Raycast(hit.position, -transform.up, 2f, theGround))
+                {
+                    walkPoint = hit.position;
+                    walkPointSet = true;
+                    return;
+                }
+            }
         }
+
+        walkPointSet = false;
+        Debug.Log("Failed to find walk point");
     }
+
 
     private void TransitionToState(EnemyState newState)
     {
+        if (newState == EnemyState.Patrol)
+        {
+        //    //pathfinding.ClearPath();
+           walkPointSet = false;
+        }
+
         currentState = newState;
     }
 
     private void Chase()
     {
-        agent.SetDestination(player.position);
-        Debug.Log("Chase 5");
+        //agent.enabled = false;
+
+        if (playerInSightRange)
+        {
+            currentlyChasing = true;
+
+            if (currentlyChasing)
+            {
+                //pathfinding.enabled = true;
+                //pathfinding.FindPath(transform.position, player.position);
+                Debug.Log("Chase 5: A* Pathfinding activated");
+            }
+        }
+
+        else
+        {
+            Debug.Log("player is not in sight");
+            pathfinding.enabled = false;
+            currentlyChasing = false;
+            TransitionToState(EnemyState.Patrol);
+        }
+        //else
+        //{
+        //    agent.SetDestination(player.position);
+        //    Debug.LogWarning("Pathfinding script missing");
+        //}
+    }
+
+    public bool Something()
+    {
+        return currentlyChasing;
     }
 
     private void Attack()
@@ -154,6 +207,11 @@ public class EnemyAI : MonoBehaviour
     private void ResetAttack()
     {
         alreadyAttacked = false;
+    }
+
+    public EnemyState GetCurrentState()
+    {
+        return currentState;
     }
 
     private void OnDrawGizmos()

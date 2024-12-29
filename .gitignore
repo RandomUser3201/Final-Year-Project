@@ -58,6 +58,7 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+/Library/
 Library/ShaderCache/builtin/unity_builtin_extra0000/00/f70d2d3526c8fda78b20ff527cea25d3.bin
 Library/ShaderCache/builtin/unity_builtin_extra0000/00/f7aa20b21db772250f48b012c312d503.bin
 Library/ShaderCache/builtin/unity_builtin_extra0000/00/fde8c0f41e7a7a48637b2a30ad020709.bin
@@ -21825,3 +21826,5 @@ Library/PackageCache/com.unity.2d.sprite@1.0.0/Documentation~/index.md
 Library/PackageCache/com.unity.2d.sprite@1.0.0/Documentation~/DataProvider.md
 Library/PackageCache/com.unity.2d.sprite@1.0.0/CHANGELOG.md.meta
 Library/PackageCache/com.unity.2d.sprite@1.0.0/CHANGELOG.md
+
+

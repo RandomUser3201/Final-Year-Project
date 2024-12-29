@@ -7,11 +7,21 @@ public class Grid : MonoBehaviour
 
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
+    public Vector3 gridOrigin;
+
     public float nodeRadius;
+    public float nodeSize;
+
     Node[,] grid;
 
     float nodeDiameter;
     int gridSizeX, gridSizeY;
+
+    public float gridWorldWidth => gridSizeX * nodeSize;
+    public float gridWorldHeight => gridSizeY * nodeSize;
+    public float gridOriginX => gridOrigin.x;
+    public float gridOriginZ => gridOrigin.z;
+
 
     void Awake()
     {
@@ -51,10 +61,10 @@ public class Grid : MonoBehaviour
 
                 grid[x, y] = new Node(walkable, worldPoint, x, y);
 
-                if (!walkable)
-                {
-                    Debug.Log($"Unwalkable node at: {worldPoint}");
-                }
+                //if (!walkable)
+                //{
+                //    Debug.Log($"Unwalkable node at: {worldPoint}");
+                //}
             }
         }
     }
@@ -85,18 +95,22 @@ public class Grid : MonoBehaviour
 
     public Node NodeFromWorldPoint(Vector3 worldPosition)
     {
-        float percentX = (worldPosition.x + gridWorldSize.x / 2) / gridWorldSize.x;
-        float percentY = (worldPosition.z + gridWorldSize.y / 2) / gridWorldSize.y;
+        Vector3 worldBottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
+
+        float percentX = (worldPosition.x - worldBottomLeft.x) / gridWorldSize.x;
+        float percentY = (worldPosition.z - worldBottomLeft.z) / gridWorldSize.y;
+
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
 
         int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
         int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
+
         return grid[x, y];
     }
 
 
-    public void HighlightPath(List<Node> path)
+    public void HighlightPath(List<Node> path, Color uniquecolor)
     {
         foreach (Node n in grid)
         {
@@ -108,6 +122,7 @@ public class Grid : MonoBehaviour
             foreach (Node n in path)
             {
                 n.isPathNode = true;
+                Debug.DrawLine(n.worldPosition, n.worldPosition + Vector3.up * 2, uniquecolor, 0.5f);
             }
         }
     }

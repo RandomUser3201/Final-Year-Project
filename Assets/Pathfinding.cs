@@ -6,16 +6,27 @@ public class Pathfinding : MonoBehaviour
 {
     public Transform seeker; // enemy
     public Transform target; // player
+    private NavMeshAgent agent;
+
     public float speed = 2f;
 
     private Grid grid;
     private List<Node> path;
+
     private int currentNodeIndex = 0;
-    private NavMeshAgent agent;
     private Vector3 lastTargetPosition;
     private float pathThreshold = 1f;
 
-    private bool pathfindingEnabled = false;
+    private float pathRecalcCooldown = 0.2f;
+    private float nextPathRecalcTime;
+
+
+    private EnemyAI enemyAI;
+    //public List<Node> Path
+    //{
+    //    get { return path; }
+    //}
+
 
     void Start()
     {
@@ -36,28 +47,25 @@ public class Pathfinding : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            pathfindingEnabled = !pathfindingEnabled;
-        }
-
-        if (pathfindingEnabled)
-        {
-            // Recalculate the path if the target has moved significantly
-            if (Vector3.Distance(lastTargetPosition, target.position) > pathThreshold)
+        
+            if (Time.time >= nextPathRecalcTime &&
+            Vector3.Distance(lastTargetPosition, target.position) > pathThreshold)
             {
                 FindPath(seeker.position, target.position);
                 lastTargetPosition = target.position;
+                nextPathRecalcTime = Time.time + pathRecalcCooldown;
             }
-        }
-        FollowPath();
+
+            FollowPath();
+        
     }
 
 
     // Finds a path from the seeker to the target
-    void FindPath(Vector3 startPos, Vector3 targetPos)
+    public void FindPath(Vector3 startPos, Vector3 targetPos)
     {
         Debug.Log($"Finding path from {seeker.position} to {target.position}");
+        Debug.Log($"Enemy {gameObject.name} recalculating path.");
 
         Node startNode = grid.NodeFromWorldPoint(startPos);
         Node targetNode = grid.NodeFromWorldPoint(targetPos);
@@ -129,23 +137,29 @@ public class Pathfinding : MonoBehaviour
         // tested - using this will start make the enemy start from the first node as opposed to the last one, each time the player moves the enemy will go further.
         //currentNodeIndex = Mathf.Min(currentNodeIndex, path.Count - 1);
 
-        grid.HighlightPath(path);
+        grid.HighlightPath(path, Color.black);
 
 
         // pass the path to NavMeshAgent
         if (path.Count > 0)
         {
             List<Vector3> navPath = new List<Vector3>();
+
             foreach (var node in path)
             {
-                navPath.Add(node.worldPosition);
+                if (NavMesh.SamplePosition(node.worldPosition, out NavMeshHit hit, 1f, NavMesh.AllAreas))
+                {
+                    navPath.Add(hit.position);
+                }
+                else
+                {
+                    navPath.Add(node.worldPosition);
+                }
             }
 
             // follow the calculated path using navmesh
             agent.SetPath(CreateNavMeshPath(navPath));
         }
-
-
     }
 
     // grid path into a NavMeshPath for the agent
@@ -166,24 +180,48 @@ public class Pathfinding : MonoBehaviour
 
     void FollowPath()
     {
-        if (path == null || path.Count == 0) return;
-
-        if (currentNodeIndex < path.Count)
+        if (enemyAI.currentlyChasing == false)
         {
-            Node targetNode = path[currentNodeIndex];
-            Vector3 targetPosition = targetNode.worldPosition;
+            if (path == null || path.Count == 0) return;
 
-            seeker.position = Vector3.MoveTowards(seeker.position, targetPosition, speed * Time.deltaTime);
+            EnemyAI enemyAI = seeker.GetComponent<EnemyAI>();
 
-            if (Vector3.Distance(seeker.position, targetPosition) < 1f)
+            //if (enemyAI != null && enemyAI.GetCurrentState() != EnemyAI.EnemyState.Chase)
+            //{
+            //    return;
+            //}
+
+            if (currentNodeIndex < path.Count)
             {
-                currentNodeIndex++;
-            }
-        }
+                Node targetNode = path[currentNodeIndex];
+                Vector3 targetPosition = targetNode.worldPosition;
 
-        else
-        {
-            seeker.position = Vector3.MoveTowards(seeker.position, target.position, speed * Time.deltaTime);
+                seeker.position = Vector3.MoveTowards(seeker.position, targetPosition, speed * Time.deltaTime);
+
+                if (Vector3.Distance(seeker.position, targetPosition) < 1f)
+                {
+                    currentNodeIndex++;
+                    path.RemoveAt(0);
+                }
+
+            }
+
+            //else
+            //{
+            //    agent.SetDestination(target.position);
+            //}
+
+            //else
+            //{
+            //    seeker.position = Vector3.MoveTowards(seeker.position, target.position, speed * Time.deltaTime);
+            //}
         }
     }
+
+    //public void ClearPath()
+    //{
+
+    //        path.Clear();
+        
+    //}
 }
