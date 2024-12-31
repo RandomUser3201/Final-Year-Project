@@ -5,11 +5,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    public float speed = 5f;  
-    public Transform cameraTransform;  
+    public float speed = 5f;
+    public Transform cameraTransform;
     public float mouseSensitivity = 100f;  
-    public float distanceFromPlayer = 5f;  
+    public float distanceFromPlayer = 5f;
 
     private float rotationX = 0f;  
     private float rotationY = 0f;

@@ -48,16 +48,16 @@ public class Pathfinding : MonoBehaviour
     void Update()
     {
         
-            if (Time.time >= nextPathRecalcTime &&
-            Vector3.Distance(lastTargetPosition, target.position) > pathThreshold)
-            {
-                FindPath(seeker.position, target.position);
-                lastTargetPosition = target.position;
-                nextPathRecalcTime = Time.time + pathRecalcCooldown;
-            }
+        if (Time.time >= nextPathRecalcTime &&
+        Vector3.Distance(lastTargetPosition, target.position) > pathThreshold)
+        {
+            FindPath(seeker.position, target.position);
+            lastTargetPosition = target.position;
+            nextPathRecalcTime = Time.time + pathRecalcCooldown;
+        }
 
-            FollowPath();
-        
+        FollowPath();
+
     }
 
 
@@ -208,20 +208,18 @@ public class Pathfinding : MonoBehaviour
 
             //else
             //{
-            //    agent.SetDestination(target.position);
+                //agent.SetDestination(target.position);
             //}
 
             //else
             //{
-            //    seeker.position = Vector3.MoveTowards(seeker.position, target.position, speed * Time.deltaTime);
+                //seeker.position = Vector3.MoveTowards(seeker.position, target.position, speed * Time.deltaTime);
             //}
         }
     }
 
     //public void ClearPath()
     //{
-
-    //        path.Clear();
-        
+        //path.Clear();   
     //}
 }

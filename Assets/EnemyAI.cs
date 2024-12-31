@@ -62,7 +62,7 @@ public class EnemyAI : MonoBehaviour
                     Debug.Log("Patrol 3");
                     Patrol();
                 }
-                break;
+            break;
 
             case EnemyState.Chase:
                 if (!playerInSightRange && !playerInAttackRange)
@@ -123,7 +123,7 @@ public class EnemyAI : MonoBehaviour
     private void SearchWalkPoint()
     {
         for (int walkPointAttempts = 0; walkPointAttempts < 2; walkPointAttempts++)
-        { 
+        {
             float randomZ = Random.Range(-walkPointRange, walkPointRange);
             float randomX = Random.Range(-walkPointRange, walkPointRange);
 
@@ -149,8 +149,8 @@ public class EnemyAI : MonoBehaviour
     {
         if (newState == EnemyState.Patrol)
         {
-        //    //pathfinding.ClearPath();
-           walkPointSet = false;
+            //pathfinding.ClearPath();
+            walkPointSet = false;
         }
 
         currentState = newState;
