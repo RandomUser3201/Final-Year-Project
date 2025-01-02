@@ -6,7 +6,7 @@ public class Pathfinding : MonoBehaviour
 {
     // [References]
     public Transform seeker;
-    public Transform target; 
+    public Transform target;
     private NavMeshAgent agent;
     private EnemyAI enemyAI;
 
@@ -160,9 +160,8 @@ public class Pathfinding : MonoBehaviour
         if (path.Count > 0)
         {
             List<Vector3> navPath = new List<Vector3>();
-           
-            // Check if the position of the node is on the NavMesh
 
+            // Check if the position of the node is on the NavMesh
             foreach (var node in path)
             {
                 if (NavMesh.SamplePosition(node.worldPosition, out NavMeshHit hit, 1f, NavMesh.AllAreas))

@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerSound : MonoBehaviour
 {
     // [References]
-    public AudioSource audioSource; 
+    public AudioSource audioSource;
     public AudioClip footsteps;
     private PlayerMovement playerMovement;
 

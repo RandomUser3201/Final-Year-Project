@@ -18,7 +18,7 @@ public class Grid : MonoBehaviour
     public float gridWorldHeight => gridSizeY * nodeSize;
     public float gridOriginX => gridOrigin.x;
     public float gridOriginZ => gridOrigin.z;
-    
+
     int gridSizeX, gridSizeY;
     Node[,] grid;
 
@@ -110,11 +110,11 @@ public class Grid : MonoBehaviour
         // Get position of the grid's bottom left corner
         Vector3 worldBottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
 
-        // Calculate the position as a percentage of the grid size.
+        // Calculate the position as a percentage of the grid size
         float percentX = (worldPosition.x - worldBottomLeft.x) / gridWorldSize.x;
         float percentY = (worldPosition.z - worldBottomLeft.z) / gridWorldSize.y;
-        
-        // Clamp the values - ensure within bounds.
+
+        // Clamp the values - ensure within bounds
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
 

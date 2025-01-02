@@ -16,7 +16,7 @@ public class Node
     public int gCost;
     public int hCost;
     public int fCost => gCost + hCost;
-    
+
     // Node initialization
     public Node(bool walkable, Vector3 worldPosition, int gridX, int gridY)
     {
