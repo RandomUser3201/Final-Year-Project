@@ -1473,7 +1473,7 @@ GameObject:
   - component: {fileID: 624322474}
   - component: {fileID: 624322480}
   - component: {fileID: 624322481}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1724,6 +1724,9 @@ MonoBehaviour:
   footsteps: {fileID: 8300000, guid: 4baab68701a121d4e84f9b98ca00776b, type: 3}
   normalSpeed: 6
   sneakSpeed: 3
+  volumeIncrease: 0.2
+  volumeDecrease: 0.1
+  maxVolume: 1
 --- !u!1001 &642711854
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1924,8 +1927,10 @@ MonoBehaviour:
   timeBetweenAttacks: 2
   sightRange: 10
   attackRange: 3
+  soundRange: 0
   playerInSightRange: 0
   playerInAttackRange: 0
+  detectionThreshold: 0.1
   currentlyChasing: 0
 --- !u!195 &699849958
 NavMeshAgent:
@@ -5045,8 +5050,10 @@ MonoBehaviour:
   timeBetweenAttacks: 2
   sightRange: 20
   attackRange: 3
+  soundRange: 30
   playerInSightRange: 0
   playerInAttackRange: 0
+  detectionThreshold: 0.1
   currentlyChasing: 0
 --- !u!1001 &1828577666
 PrefabInstance:
