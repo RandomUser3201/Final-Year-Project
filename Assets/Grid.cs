@@ -22,8 +22,6 @@ public class Grid : MonoBehaviour
     int gridSizeX, gridSizeY;
     Node[,] grid;
 
-
-
     void Awake()
     {
         // Calculate the diameter based on the radius
@@ -34,7 +32,6 @@ public class Grid : MonoBehaviour
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
         CreateGrid();
     }
-
 
     void Update()
     {
@@ -124,7 +121,6 @@ public class Grid : MonoBehaviour
 
         return grid[x, y];
     }
-
 
     public void HighlightPath(List<Node> path, Color uniquecolor)
     {

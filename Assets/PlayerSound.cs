@@ -8,6 +8,7 @@ public class PlayerSound : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip footsteps;
     private PlayerMovement playerMovement;
+    private EnemyAI enemyAI;
 
     // [Speed Control]
     public float normalSpeed = 6f;
@@ -18,9 +19,12 @@ public class PlayerSound : MonoBehaviour
     public float volumeDecrease = 0.10f;
     public float maxVolume = 1f;
 
+    private bool showDebugInfo;
+
     void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
         audioSource.volume = 0f;
 
         if (playerMovement == null)
@@ -34,8 +38,10 @@ public class PlayerSound : MonoBehaviour
     {
         bool isSneaking = Input.GetKey(KeyCode.LeftShift);
 
-        // Display volume, speed and sneaking information for debuggging.
-        Debug.LogWarning("Volume: [" + audioSource.volume + "] Player Speed: [" + playerMovement.speed + "] Sneaking [" + isSneaking + "]");
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            showDebugInfo = !showDebugInfo;
+        }
 
         // Shift key activates sneak function 
         if (isSneaking)
@@ -72,17 +78,17 @@ public class PlayerSound : MonoBehaviour
 
         // Increases volume while the function is active
         audioSource.volume = Mathf.Clamp(audioSource.volume + volumeIncrease * Time.deltaTime, 0, maxVolume);
-        Debug.LogWarning("Footsteps volume increasing: " + audioSource.volume);
+        Debug.Log("Footsteps volume increasing: " + audioSource.volume);
     }
 
     void StopFootsteps()
     {
         // If player stops moving then volume is set to 0 and audio stops
-        if (!IsPlayerMoving())
+        if (!IsPlayerMoving() && !enemyAI.playerInSightRange)
         {
             audioSource.Stop();
             audioSource.volume = 0f;
-            Debug.LogWarning("Footsteps stopped");
+            Debug.Log("Footsteps stopped");
         }
     }
 
@@ -90,13 +96,13 @@ public class PlayerSound : MonoBehaviour
     {
         // Decreases volume while function is active
         audioSource.volume = Mathf.Clamp(audioSource.volume - (volumeDecrease * Time.deltaTime), 0, maxVolume);
-        Debug.LogWarning("Footsteps volume decreasing: " + audioSource.volume);
+        Debug.Log("Footsteps volume decreasing: " + audioSource.volume);
 
         // If audio is below 0, player is moving and audio is playing then stops the audio.
         if (audioSource.volume <= 0 && !IsPlayerMoving() && audioSource.isPlaying)
         {
             audioSource.Stop();
-            Debug.LogWarning("Sneaking has reduced volume to 0 - audio stopped");
+            Debug.Log("Sneaking has reduced volume to 0 - audio stopped");
         }
 
         // Reduces speed to sneakSpeed
@@ -104,7 +110,6 @@ public class PlayerSound : MonoBehaviour
         {
             playerMovement.speed = sneakSpeed;
         }
-        Debug.Log("Sneak Mode Active: Speed reduced");
     }
 
     void RestoreSpeed()
@@ -114,13 +119,30 @@ public class PlayerSound : MonoBehaviour
         {
             playerMovement.speed = normalSpeed;
         }
-
-        Debug.Log("Speed Restored");
     }
 
     // Bool used to detect if movement input keys are entered.
     bool IsPlayerMoving()
     {
         return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
+    }
+
+    private void OnGUI()
+    {
+        if (showDebugInfo)
+        {
+            GUIStyle customStyle = new GUIStyle();
+            customStyle.fontSize = 30; 
+            customStyle.normal.textColor = Color.red;
+
+            // Display information on the screen
+            GUI.Label(new Rect(10, 10, 500, 30), "Volume: [" + audioSource.volume + "]", customStyle);
+            GUI.Label(new Rect(10, 40, 500, 30), "Player Speed: [" + playerMovement.speed + "]", customStyle);
+            GUI.Label(new Rect(10, 70, 500, 30), "Player Sneaking: [" + Input.GetKey(KeyCode.LeftShift) + "]", customStyle);
+            GUI.Label(new Rect(10, 100, 500, 30), "Player Moving: [" + IsPlayerMoving() + "]", customStyle);
+            GUI.Label(new Rect(10, 130, 500, 30), "Player Health: [" + enemyAI.playerHealth + "]", customStyle);
+
+            GUI.Label(new Rect(10, 180, 500, 30), "Enemy State: [" + enemyAI.GetCurrentState() + "]", customStyle);
+        }
     }
 }

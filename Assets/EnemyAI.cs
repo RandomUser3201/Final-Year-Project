@@ -19,6 +19,7 @@ public class EnemyAI : MonoBehaviour
     // [Attack]
     public float timeBetweenAttacks;
     bool alreadyAttacked;
+    public int playerHealth = 3;
 
     // [Range Detection]
     public float sightRange, attackRange, soundRange;
@@ -59,40 +60,40 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Patrol:
                 if (playerInSightRange && !playerInAttackRange)
                 {
-                    Debug.Log("Player detected during patrol - Transitioning to Chase.");
+                    Debug.LogWarning("Player within sight range, not in attack - Transitioning to Chase.");
                     TransitionToState(EnemyState.Chase);
                 }
                 else if (playerInAttackRange && playerInSightRange)
                 {
-                    Debug.Log("Player within attack range - Transitioning to Attack.");
+                    Debug.LogWarning("Player within sight range and attack range - Transitioning to Attack.");
                     TransitionToState(EnemyState.Attack);
                 }
                 else if (IsPlayerMakingNoise())
                 {
-                    Debug.Log("Player making noise - Transitioning to Chase.");
+                    Debug.LogWarning("Player detected by noise - Transitioning to Chase.");
                     TransitionToState(EnemyState.Chase);
                 }
                 else
                 {
-                    Debug.Log("Patrolling..");
+                    Debug.LogWarning("Patrolling..");
                     Patrol();
                 }
                 break;
 
             case EnemyState.Chase:
-                if (!playerInSightRange && !playerInAttackRange && !IsPlayerMakingNoise())
+                if (!playerInSightRange && !IsPlayerMakingNoise())
                 {
-                    Debug.Log("Player lost - Returning to Patrol.");
+                    Debug.LogWarning("Player out of sight and not making noise - Returning to Patrol.");
                     TransitionToState(EnemyState.Patrol);
                 }
                 else if (playerInAttackRange)
                 {
-                    Debug.Log("Chasing player - Now within attack range - Transitioning to Attack.");
+                    Debug.LogWarning("Player in attack range - Transitioning to Attack.");
                     TransitionToState(EnemyState.Attack);
                 }
-                else if (playerInSightRange)
+                else
                 {
-                    Debug.Log("Chasing..");
+                    Debug.LogWarning("Chasing Player.");
                     Chase();
                 }
                 break;
@@ -100,12 +101,12 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Attack:
                 if (!playerInAttackRange)
                 {
-                    Debug.Log("Player out of attack range - Transitioning to Chase or Patrol.");
-                    TransitionToState(playerInSightRange || IsPlayerMakingNoise() ? EnemyState.Chase : EnemyState.Patrol);
+                    Debug.LogWarning("Player out of attack range - Transitioning to Chase or Patrol.");
+                    TransitionToState(playerInSightRange ? EnemyState.Chase : EnemyState.Patrol);
                 }
                 else
                 {
-                    Debug.Log("Attacking..");
+                    Debug.LogWarning("Attacking..");
                     Attack();
                 }
                 break;
@@ -181,53 +182,59 @@ public class EnemyAI : MonoBehaviour
             return false;
         }
 
-        // If noise is below threshold then 
-        if (playerAudioSource.volume <= detectionThreshold)
+        if (playerInAttackRange || playerInSightRange)
         {
             return false;
         }
 
-        // If player is not within the range
-        if (Vector3.Distance(transform.position, player.position) > soundRange)
+        // Check if the player is within the sound range
+        if (Vector3.Distance(transform.position, player.position) <= soundRange)
         {
-            return false;
+            // Return true if the player is making noise above the threshold OR is within the sound range
+            if (playerAudioSource.volume > detectionThreshold)
+            {
+                Debug.LogWarning("Player making noise, detection threshold exceeded.");
+                return true;
+            }
         }
 
-        return true;
+        return false;
     }
 
     private void Chase()
     {
-        if (playerInSightRange || IsPlayerMakingNoise())
+        if (playerInSightRange)
         {
-            currentlyChasing = true;
-
-            if (currentlyChasing)
-            {
-                Debug.Log("Chase 5: A* Pathfinding activated");
-            }
-        }
-
-        else
-        {
-            Debug.Log("player is not in sight or making noise");
-            pathfinding.enabled = false;
-            currentlyChasing = false;
-            TransitionToState(EnemyState.Patrol);
+            Debug.Log("Chasing Player");
+            agent.SetDestination(player.position);
+            Debug.Log("Destination set to: " + player.position);
         }
     }
 
     private void Attack()
     {
+        Debug.LogWarning($"Attacking! Cooldown: {alreadyAttacked}");
+
         // Stop moving to attack
         agent.SetDestination(transform.position);
 
         if (!alreadyAttacked)
         {
-            Debug.Log("Player being attacked!");
-            alreadyAttacked = true;
+            Debug.LogWarning("Attacking the player");
 
-            // Reset attack cooldown
+            // Reduce player health
+            playerHealth--;
+
+            Debug.LogWarning($"Player Health: {playerHealth}");
+
+            // Destroy the player if health reaches 0
+            if (playerHealth <= 0)
+            {
+                Debug.Log("Player destroyed");
+                Destroy(player.gameObject);
+            }
+
+            alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
     }
@@ -264,4 +271,3 @@ public class EnemyAI : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, walkPointRange);
     }
 }
-

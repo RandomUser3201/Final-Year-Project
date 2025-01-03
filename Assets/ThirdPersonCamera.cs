@@ -12,6 +12,7 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         Vector3 newPosition = target.position + offset;
 
+        // Smoothly interpolate between current camera position and the new target position
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, newPosition, smoothSpeed);
         transform.position = smoothedPosition;
 

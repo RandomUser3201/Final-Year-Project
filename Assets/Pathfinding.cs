@@ -10,10 +10,11 @@ public class Pathfinding : MonoBehaviour
     private NavMeshAgent agent;
     private EnemyAI enemyAI;
 
+    // [Pathfinding Setup]
     private Grid grid;
     private List<Node> path;
 
-
+    // [Pathing and Movement]
     private int currentNodeIndex = 0;
     private Vector3 lastTargetPosition;
     private float pathThreshold = 1f;
