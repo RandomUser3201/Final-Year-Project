@@ -19,3 +19,8 @@ public class ThirdPersonCamera : MonoBehaviour
         transform.LookAt(target);
     }
 }
+
+
+// References:
+// [Camera]
+// All Things Game Dev (2022). How To Make An FPS Player In Under A Minute - Unity Tutorial. [online] Available at: https://www.youtube.com/watch?v=qQLvcS9FxnY. [Accessed 3 Jan 2025].

@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     // [Camera]
     private float rotationX = 0f;
     private float rotationY = 0f;
-    
+
     // [Game Win Mangement]
     public float timer = 30f;
     public Transform goalPoint;
@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
         if (timer <= 0f)
         {
             timer = 0f;
-            Debug.Log("Time's up!"); 
+            Debug.Log("Time's up!");
         }
 
         if (remainingTime > 0)
@@ -54,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            remainingTime = 0; 
+            remainingTime = 0;
             FinishGame("Time's Up!");
         }
 
@@ -98,10 +98,12 @@ public class PlayerMovement : MonoBehaviour
         // Game End function
         gameFinished = true;
         winMessage.text = message;
-        winMessage.gameObject.SetActive(true); 
+        winMessage.gameObject.SetActive(true);
         Debug.Log(message);
     }
 }
 
 
-
+// References:
+// [Camera]
+// All Things Game Dev (2022). How To Make An FPS Player In Under A Minute - Unity Tutorial. [online] Available at: https://www.youtube.com/watch?v=qQLvcS9FxnY. [Accessed 3 Jan 2025].
