@@ -60,6 +60,20 @@ To play the game open the "bin" folder and open the .exe".
 | **6.2 Optimize performance**                  | 28/12/2024  | 30/12/2024  | 3                | - Improve game performance and efficiency.          |
 | **6.3 Prepare Documentation for Submission** | 31/12/2024  | 02/01/2025  | 3                | - Prepare final documentation and presentation. |
 
+## Development Log
+
+### October: Initial Setup and Foundations
+The project began with importing the necessary assets and setting up the Unity environment. A basic scene prototype was created to test player movement mechanics, which were successfully implemented. Early attempts at implementing A* pathfinding were made, laying the groundwork for future AI game development. While progress was lacking, the focus was on establishing a solid foundation for the game.
+
+### November: Basic Pathfinding and Urgency for AI States
+This month saw the successful implementation of basic pathfinding for the enemy AI. Despite taking longer than expected, the system now enables the enemy to track the player's location and avoid obstacles effectively. However, it was clear that enhancements were needed, including path visualization and improving the map for better AI interaction. There was an increasing urgency to implement enemy states, which became the next priority. Overall, the focus shifted toward refining core AI functionality to make the gameplay dynamic and interactive.
+
+### December: Recovery, Enhancements, and Core Features
+December was a highly productive but challenging month. After losing previous work due to issues with the package manager and forced pushes, efforts were directed at rebuilding the map and recovering lost code. Enemy patrol logic was introduced, allowing enemies to move within a radius, locate points randomly, and transition into a chase state upon spotting the player.
+
+Enhancements included adding gizmos for debugging, improving obstacle avoidance, and refining A* pathfinding to activate only when the player was in sight. This made enemy behavior more realistic and efficient. Audio detection and player sound mechanics were also integrated: footsteps sounds were added for the player, and sneaking (using the L-Shift key) reduced noise and player speed.
+
+Code quality was a focus this month. A superlinter workflow was set up to identify and fix whitespace errors, and detailed code comments were added for clarity. Additional improvements included fixing a bug that broke all enemy states, reworking enemy AI states, and adding an end-game timer. The game now supports a cohesive enemy state system, consisting of patrol, chase, and attack behaviors based on player noise and visibility. These changes brought the project much closer to its intended vision, setting up a strong foundation for further enhancements.
 
 ## Gantt Chart:
 ![gant chart for ai](https://github.com/user-attachments/assets/34566559-924f-4869-942b-d91dcc65a06c)
