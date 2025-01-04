@@ -203,11 +203,25 @@ public class EnemyAI : MonoBehaviour
 
     private void Chase()
     {
+        Debug.LogWarning("Enter chase()");
+
+        if (!playerInSightRange && !IsPlayerMakingNoise())
+        {
+            Debug.LogWarning("Player out of chase range - stopping FollowPath");
+            //pathfinding.currentNodeIndex = 0; 
+            //pathfinding.path = null; 
+            return;
+        }
+
         if (playerInSightRange)
         {
             Debug.Log("Chasing Player");
-            agent.SetDestination(player.position);
-            Debug.Log("Destination set to: " + player.position);
+            pathfinding.FollowPath();
+            Debug.LogWarning("Destination set to: " + player.position);
+        }
+        else
+        {
+            Debug.LogWarning("Else chase");
         }
     }
 
@@ -249,6 +263,11 @@ public class EnemyAI : MonoBehaviour
     {
         // Return the current state of the enemy.
         return currentState;
+    }
+
+    public bool GetCurrentlyChasing()
+    {
+        return currentlyChasing;
     }
 
     private void OnDrawGizmos()

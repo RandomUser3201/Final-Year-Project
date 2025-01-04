@@ -738,7 +738,7 @@ Transform:
   m_GameObject: {fileID: 267728557}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.005861, y: 5.27, z: -0.19416913}
+  m_LocalPosition: {x: -59.3, y: 3, z: -15.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1639,13 +1639,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2037b4eb011cba9418a486d8adb11e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 6
   cameraTransform: {fileID: 267728561}
   mouseSensitivity: 100
   distanceFromPlayer: 5
-  timer: 30
   goalPoint: {fileID: 1694725282}
-  debugLineLength: 10
   winMessage: {fileID: 1301349005}
   timerText: {fileID: 259031784}
   totalTime: 60
@@ -2797,7 +2795,7 @@ Transform:
   m_GameObject: {fileID: 1025211871}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.4308, y: 0.7, z: 3.1}
+  m_LocalPosition: {x: -6.3, y: 0.7, z: 3.1}
   m_LocalScale: {x: 11.54026, y: 12.105592, z: 11.29775}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3045,6 +3043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seeker: {fileID: 1091014633}
   target: {fileID: 624322479}
+  currentNodeIndex: 0
   speed: 10
 --- !u!136 &1091014630
 CapsuleCollider:
@@ -5495,7 +5494,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seeker: {fileID: 1824866383}
   target: {fileID: 624322479}
-  speed: 10
+  currentNodeIndex: 0
+  speed: 2
 --- !u!54 &1824866386
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5519,7 +5519,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -5532,18 +5532,18 @@ NavMeshAgent:
   m_GameObject: {fileID: 1824866379}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_Speed: 5
   m_Acceleration: 5
   avoidancePriority: 50
-  m_AngularSpeed: 10
+  m_AngularSpeed: 15
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 1
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 5
   m_ObstacleAvoidanceType: 4
 --- !u!114 &1824866388
 MonoBehaviour:
@@ -5569,9 +5569,9 @@ MonoBehaviour:
   walkPointRange: 15
   timeBetweenAttacks: 2
   playerHealth: 3
-  sightRange: 18
+  sightRange: 24
   attackRange: 5
-  soundRange: 27
+  soundRange: 40
   playerInSightRange: 0
   playerInAttackRange: 0
   detectionThreshold: 0.7
@@ -5595,6 +5595,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 32311d0811c6d7d46a7ff6143a99818f, type: 3}
       propertyPath: m_TagString
       value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 32311d0811c6d7d46a7ff6143a99818f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 32311d0811c6d7d46a7ff6143a99818f, type: 3}
       propertyPath: m_LocalPosition.x

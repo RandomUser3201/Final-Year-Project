@@ -75,7 +75,6 @@ public class Grid : MonoBehaviour
     {
         List<Node> neighbours = new List<Node>();
 
-
         // Iterate through each position in the grid and create nodes.
         for (int x = -1; x <= 1; x++)
         {

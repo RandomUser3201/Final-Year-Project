@@ -12,10 +12,10 @@ public class Pathfinding : MonoBehaviour
 
     // [Pathfinding Setup]
     private Grid grid;
-    private List<Node> path;
+    public List<Node> path;
 
     // [Pathing and Movement]
-    private int currentNodeIndex = 0;
+    public int currentNodeIndex = 0;
     private Vector3 lastTargetPosition;
     private float pathThreshold = 1f;
     private float pathRecalcCooldown = 0.2f;
@@ -199,35 +199,36 @@ public class Pathfinding : MonoBehaviour
         return dstX > dstY ? 14 * dstY + 10 * (dstX - dstY) : 14 * dstX + 10 * (dstY - dstX);
     }
 
-    void FollowPath()
+    public void FollowPath()
     {
-        // If the enemy is not currently chasing, follow the calculated path
-        if (enemyAI.currentlyChasing == false)
+        if (path == null || path.Count == 0)
         {
-            // If path non existent, return
-            if (path == null || path.Count == 0)
+            Debug.LogWarning("No path to follow, exiting FollowPath()");
+            return;
+        }
+
+        // Reference to Enemy AI
+        EnemyAI enemyAI = seeker.GetComponent<EnemyAI>();
+
+        // Ensure this is only called in Chase state
+        if (enemyAI.GetCurrentState() != EnemyAI.EnemyState.Chase)
+        {
+            Debug.LogWarning("Not in chase state, stopping FollowPath()");
+            return;
+        }
+
+        // Move through the path
+        if (currentNodeIndex < path.Count)
+        {
+            Node targetNode = path[currentNodeIndex];
+            Vector3 targetPosition = targetNode.worldPosition;
+
+            seeker.position = Vector3.MoveTowards(seeker.position, targetPosition, speed * Time.deltaTime);
+
+            if (Vector3.Distance(seeker.position, targetPosition) < 1f)
             {
-                return;
-            }
-
-            // Reference to Enemy AI
-            EnemyAI enemyAI = seeker.GetComponent<EnemyAI>();
-
-            // If there are still nodes to follow in the path
-            if (currentNodeIndex < path.Count)
-            {
-                Node targetNode = path[currentNodeIndex];
-                Vector3 targetPosition = targetNode.worldPosition;
-
-                // Move towards the target node
-                seeker.position = Vector3.MoveTowards(seeker.position, targetPosition, speed * Time.deltaTime);
-
-                // If close enough to the target node, move to the next node and remove the reached node from the path
-                if (Vector3.Distance(seeker.position, targetPosition) < 1f)
-                {
-                    currentNodeIndex++;
-                    path.RemoveAt(0);
-                }
+                currentNodeIndex++;
+                path.RemoveAt(0);
             }
         }
     }

@@ -5,21 +5,18 @@ using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    // [Movement]
+    // [Movement and Camera]
     public float speed = 5f;
     public Transform cameraTransform;
-    public float mouseSensitivity = 100f;
+    public float mouseSensitivity = 200f;
     public float distanceFromPlayer = 5f;
-
-    // [Camera]
     private float rotationX = 0f;
     private float rotationY = 0f;
 
-    // [Game Win Mangement]
-    public float timer = 30f;
+    private Rigidbody rb;
+
+    // [Game Win Management]
     public Transform goalPoint;
-    public float debugLineLength = 10f;
     public Text winMessage;
     private bool gameFinished = false;
     public Text timerText;
@@ -28,11 +25,27 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        // Lock the cursor for better camera control.
+        // Lock cursor for better control
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         winMessage.gameObject.SetActive(false);
         remainingTime = totalTime;
+
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody component is missing on the Player.");
+        }
+
+        if (cameraTransform == null)
+        {
+            cameraTransform = Camera.main.transform;
+            if (cameraTransform == null)
+            {
+                Debug.LogError("No camera assigned, and no Main Camera found in the scene!");
+            }
+        }
     }
 
     void Update()
@@ -41,13 +54,8 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
-        timer -= Time.deltaTime;
-        if (timer <= 0f)
-        {
-            timer = 0f;
-            Debug.Log("Time's up!");
-        }
 
+        // Update timer
         if (remainingTime > 0)
         {
             remainingTime -= Time.deltaTime;
@@ -63,34 +71,69 @@ public class PlayerMovement : MonoBehaviour
         int seconds = Mathf.FloorToInt(remainingTime % 60f);
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
-        // Handle horizontal and vertical movement
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        transform.Translate(movement * speed * Time.deltaTime, Space.World);
-
-        // Handle camera rotation with mouse input
+        // Handle mouse input
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        Debug.Log($"MouseX: {mouseX}, MouseY: {mouseY}");
+
+        // Update rotation values
         rotationY += mouseX;
         rotationX -= mouseY;
+
+        // Clamped vertical rotation to prevent flipping
         rotationX = Mathf.Clamp(rotationX, -35f, 60f);
 
-        // Update the camera's position and rotation
-        cameraTransform.position = transform.position - cameraTransform.forward * distanceFromPlayer;
+        // Apply rotation to the camera
         cameraTransform.rotation = Quaternion.Euler(rotationX, rotationY, 0f);
 
-        // Draw a debug line to visualize the forward direction
-        cameraTransform.position = transform.position - cameraTransform.forward * distanceFromPlayer;
+        // Updated the camera position relative to the player
+        cameraTransform.position = transform.position - cameraTransform.forward * distanceFromPlayer + Vector3.up * 1.5f;
 
-        // Draw a debug line to visualize the forward direction
-        Debug.DrawRay(transform.position, transform.forward * debugLineLength, Color.red);
-
-        // Detect when the player reaches the goal point.
-        if (Vector3.Distance(transform.position, goalPoint.position) < 1f)
+        // Detect when the player reaches the goal point
+        if (Vector3.Distance(transform.position, goalPoint.position) < 5f)
         {
             FinishGame("You Win!");
         }
+    }
+
+    void FixedUpdate()
+    {
+        if (gameFinished) return;
+
+        // Get input from WASD or arrow keys
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        if (horizontal == 0f && vertical == 0f)
+            return;
+
+        // Get the forward and right directions from the camera
+        Vector3 cameraForward = cameraTransform.forward;
+        Vector3 cameraRight = cameraTransform.right;
+
+        // Flatten directions on the horizontal plane
+        cameraForward.y = 0f;
+        cameraRight.y = 0f;
+
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        // Calculate movement direction
+        Vector3 movement = (cameraForward * vertical + cameraRight * horizontal).normalized;
+
+        // Move the player
+        rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
+
+        // Rotate the player to face the movement direction
+        if (movement.magnitude > 0)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(movement, Vector3.up);
+            rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, 10f * Time.fixedDeltaTime);
+        }
+
+        // Debug movement direction
+        Debug.DrawRay(transform.position, movement * 5f, Color.green);
     }
 
     private void FinishGame(string message)
@@ -103,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
     }
 }
 
-
 // References:
 // [Camera]
 // All Things Game Dev (2022). How To Make An FPS Player In Under A Minute - Unity Tutorial. [online] Available at: https://www.youtube.com/watch?v=qQLvcS9FxnY. [Accessed 3 Jan 2025].
+
