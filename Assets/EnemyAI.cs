@@ -10,6 +10,7 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
     public LayerMask theGround, thePlayer;
     private Pathfinding pathfinding;
+    public PulseRateManager pulseratemanager;
 
     // [Walk Point]
     public Vector3 walkPoint;
