@@ -75,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        Debug.Log($"MouseX: {mouseX}, MouseY: {mouseY}");
+        //Debug.Log($"MouseX: {mouseX}, MouseY: {mouseY}");
 
         // Update rotation values
         rotationY += mouseX;

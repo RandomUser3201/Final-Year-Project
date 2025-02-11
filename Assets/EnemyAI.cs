@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
     public LayerMask theGround, thePlayer;
     private Pathfinding pathfinding;
-    public PulseRateManager pulseratemanager;
+    private PulseRateManager pulseratemanager;
 
     // [Walk Point]
     public Vector3 walkPoint;
@@ -40,6 +41,7 @@ public class EnemyAI : MonoBehaviour
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         pathfinding = GetComponent<Pathfinding>();
+        pulseratemanager = GetComponent<PulseRateManager>();
         playerAudioSource = player.GetComponent<AudioSource>();
     }
 
@@ -51,6 +53,8 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
+        ToggleVisibility();
+
         // Check if the player is within sight, attack, or sound detection range.
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, thePlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, thePlayer);
@@ -112,6 +116,8 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
         }
+
+
     }
 
     private void Patrol()
@@ -209,8 +215,6 @@ public class EnemyAI : MonoBehaviour
         if (!playerInSightRange && !IsPlayerMakingNoise())
         {
             Debug.LogWarning("Player out of chase range - stopping FollowPath");
-            //pathfinding.currentNodeIndex = 0; 
-            //pathfinding.path = null; 
             return;
         }
 
@@ -269,6 +273,25 @@ public class EnemyAI : MonoBehaviour
     public bool GetCurrentlyChasing()
     {
         return currentlyChasing;
+    }
+
+    public void ToggleVisibility()
+    {
+        if (pulseratemanager.heartRate <= 120)
+        {
+            sightRange = 5f;
+            soundRange = 5f;
+
+            Debug.LogWarning("HEART RATE BELOW 100, INVISIBLE. BPM: " + pulseratemanager.heartRate);
+        }
+
+        else 
+        {
+            sightRange = 24f;
+            soundRange = 40f;
+
+            Debug.LogWarning("HEART RATE BELOW 100. BPM: " + pulseratemanager.heartRate);
+        }
     }
 
     private void OnDrawGizmos()

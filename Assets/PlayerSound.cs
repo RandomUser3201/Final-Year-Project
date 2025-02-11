@@ -9,6 +9,7 @@ public class PlayerSound : MonoBehaviour
     public AudioClip footsteps;
     private PlayerMovement playerMovement;
     private EnemyAI enemyAI;
+    private PulseRateManager pulseratemanager;
 
     // [Speed Control]
     public float normalSpeed = 6f;
@@ -25,6 +26,7 @@ public class PlayerSound : MonoBehaviour
     {
         playerMovement = GetComponent<PlayerMovement>();
         enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
+        pulseratemanager = GetComponent<PulseRateManager>();
         audioSource.volume = 0f;
 
         if (playerMovement == null)
@@ -143,6 +145,7 @@ public class PlayerSound : MonoBehaviour
             GUI.Label(new Rect(10, 130, 500, 30), "Player Health: [" + enemyAI.playerHealth + "]", customStyle);
 
             GUI.Label(new Rect(10, 180, 500, 30), "Enemy State: [" + enemyAI.GetCurrentState() + "]", customStyle);
+            GUI.Label(new Rect(10, 200, 500, 30), "BPM: [" + pulseratemanager.heartRate.ToString() + "]", customStyle);
         }
     }
 }

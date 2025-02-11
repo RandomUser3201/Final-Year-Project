@@ -39,7 +39,7 @@ public class PulseRateManager : MonoBehaviour
             heartRate = int.Parse(data);
             Debug.Log("Heart Rate: " + heartRate);
         }
-
+        
         bpmText.text = "BPM: " + heartRate;
         Debug.Log("BPM Cooldown: ");
     }
