@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
     public LayerMask theGround, thePlayer;
     private Pathfinding pathfinding;
-    private PulseRateManager pulseratemanager;
+    private PulseRateManager psm;
 
     // [Walk Point]
     public Vector3 walkPoint;
@@ -41,19 +42,23 @@ public class EnemyAI : MonoBehaviour
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         pathfinding = GetComponent<Pathfinding>();
-        pulseratemanager = GetComponent<PulseRateManager>();
         playerAudioSource = player.GetComponent<AudioSource>();
     }
 
     void Start()
     {
+        psm = FindObjectOfType<PulseRateManager>();
+
+        if (psm == null)
+        {
+            Debug.LogWarning("psm null");
+        }
         // Intial state set to Patrol
         currentState = EnemyState.Patrol;
     }
 
     void Update()
     {
-        ToggleVisibility();
 
         // Check if the player is within sight, attack, or sound detection range.
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, thePlayer);
@@ -117,7 +122,10 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
-
+        if (psm.visibility == false)
+        {
+            Debug.LogWarning("yhhh");
+        }
     }
 
     private void Patrol()
@@ -275,24 +283,7 @@ public class EnemyAI : MonoBehaviour
         return currentlyChasing;
     }
 
-    public void ToggleVisibility()
-    {
-        if (pulseratemanager.heartRate <= 120)
-        {
-            sightRange = 5f;
-            soundRange = 5f;
-
-            Debug.LogWarning("HEART RATE BELOW 100, INVISIBLE. BPM: " + pulseratemanager.heartRate);
-        }
-
-        else 
-        {
-            sightRange = 24f;
-            soundRange = 40f;
-
-            Debug.LogWarning("HEART RATE BELOW 100. BPM: " + pulseratemanager.heartRate);
-        }
-    }
+  
 
     private void OnDrawGizmos()
     {

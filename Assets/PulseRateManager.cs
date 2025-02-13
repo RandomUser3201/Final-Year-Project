@@ -14,14 +14,22 @@ public class PulseRateManager : MonoBehaviour
     public int heartRate = 0;
     public Text bpmText;
 
-    // Start is called before the first frame update
+    public bool visibility = true;
+    private EnemyAI enemyai;
+
+
     void Start()
     {
+        enemyai = FindObjectOfType<EnemyAI>();
+        if (enemyai == null)
+        {
+            Debug.LogWarning("enemy ai null");
+        }
         try
         {
             serialPort = new SerialPort(portName, baudRate);
             serialPort.Open();
-            serialPort.ReadTimeout = 100;
+            serialPort.ReadTimeout = 500;
             Debug.Log("Serial Port Opened");
         }
         catch (Exception e)
@@ -38,10 +46,12 @@ public class PulseRateManager : MonoBehaviour
             string data = serialPort.ReadLine().Trim();
             heartRate = int.Parse(data);
             Debug.Log("Heart Rate: " + heartRate);
-        }
-        
+        }       
+
         bpmText.text = "BPM: " + heartRate;
         Debug.Log("BPM Cooldown: ");
+
+        ToggleVisibility();
     }
 
     void OnApplicationQuit()
@@ -50,6 +60,25 @@ public class PulseRateManager : MonoBehaviour
         {
             serialPort.Close();
             Debug.Log("Serial Port Closed");
+        }
+    }
+
+    public void ToggleVisibility()
+    {
+        if (heartRate <= 120)
+        {
+            enemyai.sightRange = 5f;
+            enemyai.soundRange = 5f;
+            visibility = false;
+            Debug.LogWarning("HEART RATE BELOW 120, INVISIBLE.");
+        }
+
+        else 
+        {
+            enemyai.sightRange = 24f;
+            enemyai.soundRange = 40f;
+            visibility = true;
+            Debug.LogWarning("HEART RATE above 120.");
         }
     }
 }
