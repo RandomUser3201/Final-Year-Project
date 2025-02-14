@@ -16,6 +16,7 @@ public class PulseRateManager : MonoBehaviour
 
     public bool visibility = true;
     private EnemyAI enemyai;
+    private float  threshold = 0f;
 
 
     void Start()
@@ -78,8 +79,18 @@ public class PulseRateManager : MonoBehaviour
             enemyai.sightRange = 24f;
             enemyai.soundRange = 40f;
             visibility = true;
-            Debug.LogWarning("HEART RATE above 120.");
+
+            threshold = Time.deltaTime;
+
+
+            if (threshold >= 6)
+            {
+                enemyai.agent.speed = 100;
+            }
+
+            Debug.LogWarning("HEART RATE ABOVE 120.");
         }
     }
 }
 
+// https://dyadica.co.uk/blog/unity3d-serialport-script/
