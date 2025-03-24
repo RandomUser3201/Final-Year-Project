@@ -124,7 +124,7 @@ public class EnemyAI : MonoBehaviour
 
         if (psm.visibility == false)
         {
-            Debug.LogWarning("yhhh");
+            Debug.LogWarning("psm visiblity");
         }
     }
 
