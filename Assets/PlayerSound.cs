@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using StarterAssets;
 using UnityEngine;
 
 public class PlayerSound : MonoBehaviour
 {
     // [References]
-    public AudioSource audioSource;
-    public AudioClip footsteps;
-    private PlayerMovement playerMovement;
+    public AudioSource AudioSource;
+    public AudioClip AudioClip;
     private EnemyAI enemyAI;
-    private PulseRateManager pulseratemanager;
+    private ThirdPersonController _thirdPersonController;
 
     // [Speed Control]
     public float normalSpeed = 6f;
@@ -24,12 +24,12 @@ public class PlayerSound : MonoBehaviour
 
     void Awake()
     {
-        playerMovement = GetComponent<PlayerMovement>();
+        //playerMovement = GetComponent<PlayerMovement>();
+        _thirdPersonController = GetComponent<ThirdPersonController>(); 
         enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
-        pulseratemanager = GetComponent<PulseRateManager>();
-        audioSource.volume = 0f;
+        AudioSource.volume = 0f;
 
-        if (playerMovement == null)
+        if (_thirdPersonController == null)
         {
             Debug.Log("Movement script not found");
         }
@@ -38,9 +38,9 @@ public class PlayerSound : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool isSneaking = Input.GetKey(KeyCode.LeftShift);
+        bool isSneaking = Input.GetKey(KeyCode.C);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             showDebugInfo = !showDebugInfo;
         }
@@ -70,17 +70,17 @@ public class PlayerSound : MonoBehaviour
     void Footsteps()
     {
         // If there is no audio playing, plays footstep sound, and loops.
-        if (!audioSource.isPlaying)
+        if (!AudioSource.isPlaying)
         {
-            audioSource.clip = footsteps;
-            audioSource.loop = true;
-            audioSource.Play();
+            AudioSource.clip = AudioClip;
+            AudioSource.loop = true;
+            AudioSource.Play();
             Debug.Log("Footsteps now playing");
         }
 
         // Increases volume while the function is active
-        audioSource.volume = Mathf.Clamp(audioSource.volume + volumeIncrease * Time.deltaTime, 0, maxVolume);
-        Debug.Log("Footsteps volume increasing: " + audioSource.volume);
+        AudioSource.volume = Mathf.Clamp(AudioSource.volume + volumeIncrease * Time.deltaTime, 0, maxVolume);
+        Debug.Log("Footsteps volume increasing: " + AudioSource.volume);
     }
 
     void StopFootsteps()
@@ -88,8 +88,8 @@ public class PlayerSound : MonoBehaviour
         // If player stops moving then volume is set to 0 and audio stops
         if (!IsPlayerMoving() && !enemyAI.playerInSightRange)
         {
-            audioSource.Stop();
-            audioSource.volume = 0f;
+            AudioSource.Stop();
+            AudioSource.volume = 0f;
             Debug.Log("Footsteps stopped");
         }
     }
@@ -97,29 +97,29 @@ public class PlayerSound : MonoBehaviour
     void Sneak()
     {
         // Decreases volume while function is active
-        audioSource.volume = Mathf.Clamp(audioSource.volume - (volumeDecrease * Time.deltaTime), 0, maxVolume);
-        Debug.Log("Footsteps volume decreasing: " + audioSource.volume);
+        AudioSource.volume = Mathf.Clamp(AudioSource.volume - (volumeDecrease * Time.deltaTime), 0, maxVolume);
+        Debug.Log("Footsteps volume decreasing: " + AudioSource.volume);
 
         // If audio is below 0, player is moving and audio is playing then stops the audio.
-        if (audioSource.volume <= 0 && !IsPlayerMoving() && audioSource.isPlaying)
+        if (AudioSource.volume <= 0 && !IsPlayerMoving() && AudioSource.isPlaying)
         {
-            audioSource.Stop();
+            AudioSource.Stop();
             Debug.Log("Sneaking has reduced volume to 0 - audio stopped");
         }
 
         // Reduces speed to sneakSpeed
-        if (playerMovement != null)
+        if (_thirdPersonController != null)
         {
-            playerMovement.speed = sneakSpeed;
+            _thirdPersonController.MoveSpeed = sneakSpeed;
         }
     }
 
     void RestoreSpeed()
     {
         // Restores speed from sneakSpeed to original
-        if (playerMovement != null)
+        if (_thirdPersonController != null)
         {
-            playerMovement.speed = normalSpeed;
+            _thirdPersonController.MoveSpeed = normalSpeed;
         }
     }
 
@@ -138,14 +138,13 @@ public class PlayerSound : MonoBehaviour
             customStyle.normal.textColor = Color.red;
 
             // Display information on the screen
-            GUI.Label(new Rect(10, 10, 500, 30), "Volume: [" + audioSource.volume + "]", customStyle);
-            GUI.Label(new Rect(10, 40, 500, 30), "Player Speed: [" + playerMovement.speed + "]", customStyle);
+            GUI.Label(new Rect(10, 10, 500, 30), "Volume: [" + AudioSource.volume + "]", customStyle);
+            GUI.Label(new Rect(10, 40, 500, 30), "Player Speed: [" + _thirdPersonController.MoveSpeed + "]", customStyle);
             GUI.Label(new Rect(10, 70, 500, 30), "Player Sneaking: [" + Input.GetKey(KeyCode.LeftShift) + "]", customStyle);
             GUI.Label(new Rect(10, 100, 500, 30), "Player Moving: [" + IsPlayerMoving() + "]", customStyle);
             GUI.Label(new Rect(10, 130, 500, 30), "Player Health: [" + enemyAI.playerHealth + "]", customStyle);
 
             GUI.Label(new Rect(10, 180, 500, 30), "Enemy State: [" + enemyAI.GetCurrentState() + "]", customStyle);
-            GUI.Label(new Rect(10, 200, 500, 30), "BPM: [" + pulseratemanager.heartRate.ToString() + "]", customStyle);
         }
     }
 }

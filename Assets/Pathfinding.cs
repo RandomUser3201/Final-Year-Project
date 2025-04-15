@@ -56,8 +56,8 @@ public class Pathfinding : MonoBehaviour
     // Finds a path from the seeker to the target using A* algorithm.
     public void FindPath(Vector3 startPos, Vector3 targetPos)
     {
-        Debug.Log($"Finding path from {seeker.position} to {target.position}");
-        Debug.Log($"Enemy {gameObject.name} recalculating path.");
+        //Debug.Log($"Finding path from {seeker.position} to {target.position}");
+        //Debug.Log($"Enemy {gameObject.name} recalculating path.");
 
         // Convert the start and target position to a grid node.
         Node startNode = grid.NodeFromWorldPoint(startPos);

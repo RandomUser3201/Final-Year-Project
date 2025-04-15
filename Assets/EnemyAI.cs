@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -11,8 +10,11 @@ public class EnemyAI : MonoBehaviour
     public NavMeshAgent agent;
     public Transform player;
     public LayerMask theGround, thePlayer;
-    private Pathfinding pathfinding;
+    private Pathfinding _pathfinding;
     private PulseRateManager psm;
+    private AudioSource _audioSource;
+    private Animator _animator;
+
 
     // [Walk Point]
     public Vector3 walkPoint;
@@ -30,19 +32,20 @@ public class EnemyAI : MonoBehaviour
 
     // [Audio]
     public float detectionThreshold = 0.7f;
-    private AudioSource playerAudioSource;
 
     // [State]
     public enum EnemyState { Patrol, Chase, Attack }
     private EnemyState currentState;
     public bool currentlyChasing = false;
+    private bool _isRunning = false;
 
-    private void Awake()
+    void Awake()
     {
-        player = GameObject.Find("Player").transform;
+        player = GameObject.Find("PlayerArmature").transform;
         agent = GetComponent<NavMeshAgent>();
-        pathfinding = GetComponent<Pathfinding>();
-        playerAudioSource = player.GetComponent<AudioSource>();
+        _pathfinding = GetComponent<Pathfinding>();
+        _audioSource = player.GetComponent<AudioSource>();
+        _animator = GetComponent<Animator>();
     }
 
     void Start()
@@ -59,6 +62,7 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
+        AnimationController();
 
         // Check if the player is within sight, attack, or sound detection range.
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, thePlayer);
@@ -192,7 +196,7 @@ public class EnemyAI : MonoBehaviour
 
     private bool IsPlayerMakingNoise()
     {
-        if (playerAudioSource == null)
+        if (_audioSource == null)
         {
             return false;
         }
@@ -206,7 +210,7 @@ public class EnemyAI : MonoBehaviour
         if (Vector3.Distance(transform.position, player.position) <= soundRange)
         {
             // Return true if the player is making noise above the threshold OR is within the sound range
-            if (playerAudioSource.volume > detectionThreshold)
+            if (_audioSource.volume > detectionThreshold)
             {
                 Debug.LogWarning("Player making noise, detection threshold exceeded.");
                 return true;
@@ -218,6 +222,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Chase()
     {
+
         Debug.LogWarning("Enter chase()");
 
         if (!playerInSightRange && !IsPlayerMakingNoise())
@@ -229,7 +234,7 @@ public class EnemyAI : MonoBehaviour
         if (playerInSightRange)
         {
             Debug.Log("Chasing Player");
-            pathfinding.FollowPath();
+            _pathfinding.FollowPath();
             Debug.LogWarning("Destination set to: " + player.position);
         }
         else
@@ -278,13 +283,6 @@ public class EnemyAI : MonoBehaviour
         return currentState;
     }
 
-    public bool GetCurrentlyChasing()
-    {
-        return currentlyChasing;
-    }
-
-  
-
     private void OnDrawGizmos()
     {
         // Visualize detection ranges for debugging.
@@ -303,6 +301,18 @@ public class EnemyAI : MonoBehaviour
 
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, walkPointRange);
+    }
+
+    private void AnimationController()
+    {
+        if (currentState == EnemyState.Patrol)
+        {
+            _animator.SetBool("isRunning", false);
+        }
+        else 
+        {
+            _animator.SetBool("isRunning", true);
+        }
     }
 }
 
