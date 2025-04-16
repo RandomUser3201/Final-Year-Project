@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -18,7 +20,7 @@ public class EnemyAI : MonoBehaviour
 
     // [Walk Point]
     public Vector3 walkPoint;
-    bool walkPointSet;
+    private bool _isWalkPointSet;
     public float walkPointRange;
 
     // [Attack]
@@ -37,7 +39,6 @@ public class EnemyAI : MonoBehaviour
     public enum EnemyState { Patrol, Chase, Attack }
     private EnemyState currentState;
     public bool currentlyChasing = false;
-    private bool _isRunning = false;
 
     void Awake()
     {
@@ -139,20 +140,28 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Patrolling");
 
         // Find new walk point if not set
-        if (!walkPointSet)
+        if (!_isWalkPointSet)
         {
             SearchWalkPoint();
+ 
         }
 
-        if (walkPointSet)
+        if (_isWalkPointSet)
         {
             // Move towards walk point
             agent.SetDestination(walkPoint);
 
-            // Check if the destination is reached
-            if (Vector3.Distance(transform.position, walkPoint) < 6f)
+            Vector3 direction = walkPoint - transform.position;
+            if (direction != Vector3.zero)
             {
-                walkPointSet = false;
+                Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); 
+            }
+
+            // Check if the destination is reached
+            if (Vector3.Distance(transform.position, walkPoint) < 9f)
+            {
+                _isWalkPointSet = false;
             }
         }
     }
@@ -173,13 +182,13 @@ public class EnemyAI : MonoBehaviour
                 if (Physics.Raycast(hit.position, -transform.up, 2f, theGround))
                 {
                     walkPoint = hit.position;
-                    walkPointSet = true;
+                    _isWalkPointSet = true;
                     return;
                 }
             }
         }
 
-        walkPointSet = false;
+        _isWalkPointSet = false;
         Debug.Log("Failed to find walk point");
     }
 
@@ -188,7 +197,7 @@ public class EnemyAI : MonoBehaviour
         // Reset walk point when returning to Patrol
         if (newState == EnemyState.Patrol)
         {
-            walkPointSet = false;
+            _isWalkPointSet = false;
         }
 
         currentState = newState;
@@ -235,6 +244,7 @@ public class EnemyAI : MonoBehaviour
         {
             Debug.Log("Chasing Player");
             _pathfinding.FollowPath();
+            RotateToPlayer();
             Debug.LogWarning("Destination set to: " + player.position);
         }
         else
@@ -312,6 +322,18 @@ public class EnemyAI : MonoBehaviour
         else 
         {
             _animator.SetBool("isRunning", true);
+        }
+    }
+
+    private void RotateToPlayer()
+    {
+        Vector3 playerDirection = player.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(playerDirection, Vector3.up);
+        transform.rotation = rotation;
+        if (playerDirection != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(playerDirection, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); 
         }
     }
 }
