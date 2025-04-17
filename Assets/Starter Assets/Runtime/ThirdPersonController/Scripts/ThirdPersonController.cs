@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.ComponentModel;
+using UnityEngine;
+using Unity.Collections;
+
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -87,6 +90,8 @@ namespace StarterAssets
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
 
+        public bool isMoving = false;
+
         // timeout deltatime
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
@@ -125,6 +130,7 @@ namespace StarterAssets
 
         private void Awake()
         {
+
             // get a reference to our main camera
             if (_mainCamera == null)
             {
@@ -155,7 +161,7 @@ namespace StarterAssets
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-
+            Debug.LogWarning($"Player Magnitude {_input.move.magnitude}");
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -227,6 +233,16 @@ namespace StarterAssets
 
             float speedOffset = 0.1f;
             float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+
+            if (_input.move.magnitude > 0.5f)
+            {
+                isMoving = true;
+            }
+            else 
+            {
+                isMoving = false;
+            }
+
 
             // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -383,10 +399,16 @@ namespace StarterAssets
 
         private void OnLand(AnimationEvent animationEvent)
         {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-            }
+            // if (animationEvent.animatorClipInfo.weight > 0.5f)
+            // {
+            //     isMoving = true;
+            //     //AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+            // }
+            // else
+            // {
+            //     isMoving = false;
+            // }
         }
+
     }
 }

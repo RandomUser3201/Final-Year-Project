@@ -16,6 +16,7 @@ public class EnemyAI : MonoBehaviour
     private PulseRateManager psm;
     private AudioSource _audioSource;
     private Animator _animator;
+    private PlayerSound _playerSound;
 
 
     // [Walk Point]
@@ -47,6 +48,11 @@ public class EnemyAI : MonoBehaviour
         _pathfinding = GetComponent<Pathfinding>();
         _audioSource = player.GetComponent<AudioSource>();
         _animator = GetComponent<Animator>();
+        _playerSound = GetComponent<PlayerSound>();
+        if (_playerSound == null)
+        {
+            return;
+        }
     }
 
     void Start()
@@ -205,11 +211,6 @@ public class EnemyAI : MonoBehaviour
 
     private bool IsPlayerMakingNoise()
     {
-        if (_audioSource == null)
-        {
-            return false;
-        }
-
         if (playerInAttackRange || playerInSightRange)
         {
             return false;
@@ -219,7 +220,7 @@ public class EnemyAI : MonoBehaviour
         if (Vector3.Distance(transform.position, player.position) <= soundRange)
         {
             // Return true if the player is making noise above the threshold OR is within the sound range
-            if (_audioSource.volume > detectionThreshold)
+            if (_playerSound.currentVolume > detectionThreshold)
             {
                 Debug.LogWarning("Player making noise, detection threshold exceeded.");
                 return true;
