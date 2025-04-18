@@ -70,6 +70,8 @@ public class PlayerSound : MonoBehaviour
         Debug.LogWarning("Playback State: " + playbackState);
         Debug.LogWarning("Out Current Vol: " + _heartbeatInstance.getVolume(out currentVolume));
 
+        Debug.LogWarning("Current volume:" + currentVolume);
+
         bool isSneaking = Input.GetKey(KeyCode.C);
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -77,26 +79,26 @@ public class PlayerSound : MonoBehaviour
             _showDebugInfo = !_showDebugInfo;
         }
 
-            // // Shift key activates sneak function
-            if (isSneaking)
-            {
-                    Sneak();
-                    Debug.Log("Sneak Mode Activated");
-            }
-            else
-            {
-                RestoreSpeed();
-            }
+        // // Shift key activates sneak function
+        if (isSneaking)
+        {
+            Sneak();
+            Debug.Log("Sneak Mode Activated");
+        }
+        else
+        {
+            RestoreSpeed();
+        }
 
-            // Begins footstep logic if player is moving and not sneaking.
-            if (_thirdPersonController.isMoving == true && !isSneaking)
-            {
-                PlayHeartbeatSound();
-            }
-            else
-            {
-                StopHeartbeatSound();
-            }
+        // Begins footstep logic if player is moving and not sneaking.
+        if (_thirdPersonController.isMoving == true && !isSneaking)
+        {
+            PlayHeartbeatSound();
+        }
+        else
+        {
+            StopHeartbeatSound();
+        }
 
         if (_thirdPersonController.isMoving == true)
         {
@@ -179,7 +181,7 @@ public class PlayerSound : MonoBehaviour
             customStyle.normal.textColor = Color.red;
 
             // Display information on the screen
-                // GUI.Label(new Rect(10, 10, 500, 30), "Volume: [" + AudioSource.volume + "]", customStyle);
+            GUI.Label(new Rect(10, 10, 500, 30), "Volume: [" + currentVolume + "]", customStyle);
             GUI.Label(new Rect(10, 40, 500, 30), "Player Speed: [" + _thirdPersonController.MoveSpeed + "]", customStyle);
             GUI.Label(new Rect(10, 70, 500, 30), "Player Sneaking: [" + Input.GetKey(KeyCode.LeftShift) + "]", customStyle);
             GUI.Label(new Rect(10, 100, 500, 30), "Player Moving: [" + _thirdPersonController.isMoving + "]", customStyle);

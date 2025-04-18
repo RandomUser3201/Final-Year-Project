@@ -34,7 +34,7 @@ public class EnemyAI : MonoBehaviour
     public bool playerInSightRange, playerInAttackRange;
 
     // [Audio]
-    public float detectionThreshold = 0.7f;
+    public float detectionThreshold = 7f;
 
     // [State]
     public enum EnemyState { Patrol, Chase, Attack }
@@ -48,11 +48,7 @@ public class EnemyAI : MonoBehaviour
         _pathfinding = GetComponent<Pathfinding>();
         _audioSource = player.GetComponent<AudioSource>();
         _animator = GetComponent<Animator>();
-        _playerSound = GetComponent<PlayerSound>();
-        if (_playerSound == null)
-        {
-            return;
-        }
+        _playerSound = player.GetComponent<PlayerSound>();
     }
 
     void Start()
@@ -219,10 +215,12 @@ public class EnemyAI : MonoBehaviour
         // Check if the player is within the sound range
         if (Vector3.Distance(transform.position, player.position) <= soundRange)
         {
+            Debug.LogWarning("Current volume if distance" + _playerSound.currentVolume);
+
             // Return true if the player is making noise above the threshold OR is within the sound range
             if (_playerSound.currentVolume > detectionThreshold)
             {
-                Debug.LogWarning("Player making noise, detection threshold exceeded.");
+                Debug.LogWarning("Player making noise, detection threshold exceeded." + _playerSound.currentVolume);
                 return true;
             }
         }
@@ -246,7 +244,7 @@ public class EnemyAI : MonoBehaviour
             Debug.Log("Chasing Player");
             _pathfinding.FollowPath();
             RotateToPlayer();
-            Debug.LogWarning("Destination set to: " + player.position);
+            //Debug.LogWarning("Destination set to: " + player.position);
         }
         else
         {
