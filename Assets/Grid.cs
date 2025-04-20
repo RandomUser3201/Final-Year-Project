@@ -126,7 +126,7 @@ public class Grid : MonoBehaviour
         foreach (Node n in grid)
         {
             // Reset the path for all nodes
-            n.isPathNode = false;
+            n.IsPathNode = false;
         }
 
         if (path != null)
@@ -134,7 +134,7 @@ public class Grid : MonoBehaviour
             foreach (Node n in path)
             {
                 // Mark node as part of the path and draw a line for the path nodes
-                n.isPathNode = true;
+                n.IsPathNode = true;
                 Debug.DrawLine(n.worldPosition, n.worldPosition + Vector3.up * 2, uniquecolor, 0.5f);
             }
         }
@@ -154,7 +154,7 @@ public class Grid : MonoBehaviour
                 // Color the node white if it's walkable, or red if it's unwalkable
                 Gizmos.color = (n.walkable) ? Color.white : Color.red;
 
-                if (n.isPathNode)
+                if (n.IsPathNode)
                 {
                     // Highlight path nodes in green
                     Gizmos.color = Color.green;

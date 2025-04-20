@@ -5,7 +5,6 @@ using System;
 using System.IO.Ports;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class PulseRateManager : MonoBehaviour
 {
@@ -15,21 +14,20 @@ public class PulseRateManager : MonoBehaviour
     public int heartRate = 0;
     public Text bpmText;
 
-    public bool visibility = true;
-    private EnemyAI enemyai;
-    private float  threshold = 0f;
+    public bool IsVisible = true;
+    private EnemyAI _enemyAI;
+    private float _threshold = 0f;
 
-    private string filePath;
-
-    private float lastUpdateTime = 0f;
-    private float updateInterval = 5f;
+    private string _filePath;
+    private float _lastUpdateTime = 0f;
+    private float _updateInterval = 5f;
 
     void Start()
     {
-        enemyai = FindObjectOfType<EnemyAI>();
-        if (enemyai == null)
+        _enemyAI = FindObjectOfType<EnemyAI>();
+        if (_enemyAI == null)
         {
-            Debug.LogWarning("enemy ai null");
+            Debug.LogWarning("Enemy AI null");
         }
         try
         {
@@ -40,50 +38,50 @@ public class PulseRateManager : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError("Could not open serial port: " + e.Message);
+            Debug.LogError($"Could not open serial port: {e.Message}");
         }
 
-        filePath = Application.persistentDataPath + "/HeartRateLog.csv";
-        if (!File.Exists(filePath))
+        _filePath = Application.persistentDataPath + "/HeartRateLog.csv";
+        if (!File.Exists(_filePath))
         {
-            File.WriteAllText(filePath, "Timestamp,HeartRate,EnemyState\n");
+            File.WriteAllText(_filePath, "Timestamp,HeartRate,EnemyState\n");
         }
-        Debug.LogError("Persistent data path: " + Application.persistentDataPath);
+        Debug.LogError($"Persistent data path: {Application.persistentDataPath}");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Time.time - lastUpdateTime >= updateInterval)
+        if (Time.time - _lastUpdateTime >= _updateInterval)
         {
 
-            lastUpdateTime = Time.time;
+            _lastUpdateTime = Time.time;
 
             if (serialPort != null && serialPort.IsOpen)
             {
                 string data = serialPort.ReadLine().Trim();
                 int parsedHeartRate;
                 // heartRate = int.Parse(data);
-                Debug.Log("Heart Rate Outside Parse: " + heartRate);
+                Debug.Log($"Heart Rate Outside Parse: {heartRate}");
                 
                 if (int.TryParse(data, out parsedHeartRate))
                 {
                     heartRate = parsedHeartRate;
 
-                    int minHR = HeartRateData.Instance.minHR;
-                    int maxHR = HeartRateData.Instance.maxHR;
+                    int MinHR = HeartRateData.Instance.MinHR;
+                    int MaxHR = HeartRateData.Instance.MaxHR;
 
-                    if (heartRate < minHR || heartRate > maxHR)
+                    if (heartRate < MinHR || heartRate > MaxHR)
                     {
-                        Debug.LogWarning($"Heart rate {heartRate} outside normal range ({minHR} {maxHR}) for  {HeartRateData.Instance.playerAge} year old");
+                        Debug.LogWarning($"Heart rate {heartRate} outside normal range ({MinHR} {MaxHR}) for  {HeartRateData.Instance.PlayerAge} year old");
                     }
 
-                    Debug.Log("Heart Rate In Try Parse: " + heartRate);
+                    Debug.Log($"Heart Rate - Try Parse:  {heartRate}");
                 }
                 
                 else
                 {
-                    Debug.LogError("Invalid heart rate data received: " + data);
+                    Debug.LogError($"Invalid heart rate data received: {data}");
                 }
             }       
 
@@ -98,10 +96,10 @@ public class PulseRateManager : MonoBehaviour
     void SaveHeartRateData(int heartRate)
     {
         string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        string logEntry = $"{timestamp},{heartRate},{enemyai.GetCurrentState()}\n";
+        string logEntry = $"{timestamp},{heartRate},{_enemyAI.GetCurrentState()}\n";
         Debug.Log($"Saving heart rate data: {logEntry}"); 
 
-        File.AppendAllText(filePath, logEntry);
+        File.AppendAllText(_filePath, logEntry);
     }
 
     void OnApplicationQuit()
@@ -116,41 +114,41 @@ public class PulseRateManager : MonoBehaviour
     public void ToggleVisibility()
     {
         float tsoundRange, tsightRange;
-        int minHR = HeartRateData.Instance.minHR;
-        int maxHR = HeartRateData.Instance.maxHR;
+        int MinHR = HeartRateData.Instance.MinHR;
+        int MaxHR = HeartRateData.Instance.MaxHR;
 
-        if (heartRate < minHR)
+        if (heartRate < MinHR)
         {
             tsightRange = 5f;
             tsoundRange = 5f;
-            visibility = false;
-            Debug.LogWarning("Low Heart Rate - Visibility: " + visibility);
+            IsVisible = false;
+            Debug.LogWarning($"Low Heart Rate - Visibility: {IsVisible}");
         }
 
-        else if (heartRate > maxHR)
+        else if (heartRate > MaxHR)
         {
             tsightRange = 24f;
             tsoundRange = 40f;
-            visibility = true;
+            IsVisible = true;
 
-            threshold = Time.deltaTime;
+            _threshold = Time.deltaTime;
 
-            if (threshold >= 6)
+            if (_threshold >= 6)
             {
-                enemyai.agent.speed = 100;
+                _enemyAI.Agent.speed = 100;
             }
 
-            Debug.LogWarning("High Heart Rate - Enemy Speed: " + enemyai.agent.speed + " Visibility: " + visibility);
+            Debug.LogWarning($"High Heart Rate - Enemy Speed: {_enemyAI.Agent.speed} Visibility: {IsVisible}");
         }
         else
         {
             tsightRange = 12f;
             tsoundRange = 20f;
-            visibility = true;
+            IsVisible = true;
         }
 
-        enemyai.sightRange = Mathf.Lerp(enemyai.sightRange, tsightRange, Time.deltaTime * 1.5f);
-        enemyai.soundRange = Mathf.Lerp(enemyai.soundRange, tsoundRange, Time.deltaTime * 1.5f);
+        _enemyAI.SightRange = Mathf.Lerp(_enemyAI.SightRange, tsightRange, Time.deltaTime * 1.5f);
+        _enemyAI.SoundRange = Mathf.Lerp(_enemyAI.SoundRange, tsoundRange, Time.deltaTime * 1.5f);
 
         // Research into the heart, average heart rate, decrease it
         // Find a way for arduino to get the average heart rate

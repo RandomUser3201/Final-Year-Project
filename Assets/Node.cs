@@ -6,7 +6,7 @@ public class Node
     public bool walkable;
     public Vector3 worldPosition;
     public Node parent;
-    public bool isPathNode;
+    public bool IsPathNode;
 
     // [Grid Position]
     public int gridX;
@@ -26,7 +26,7 @@ public class Node
         this.gridY = gridY;
 
         // Indicates whether this node is part of the final path
-        this.isPathNode = false;
+        this.IsPathNode = false;
     }
 }
 

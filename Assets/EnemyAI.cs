@@ -9,58 +9,58 @@ using UnityEngine.UI;
 public class EnemyAI : MonoBehaviour
 {
     // [References]
-    public NavMeshAgent agent;
-    public Transform player;
-    public LayerMask theGround, thePlayer;
+    public NavMeshAgent Agent;
+    public Transform Player;
+    public LayerMask TheGround, ThePlayer;
     private Pathfinding _pathfinding;
-    private PulseRateManager psm;
-    private AudioSource _audioSource;
+    private PulseRateManager _pulseRateManager;
     private Animator _animator;
     private PlayerSound _playerSound;
 
 
     // [Walk Point]
-    public Vector3 walkPoint;
+    public Vector3 WalkPoint;
     private bool _isWalkPointSet;
-    public float walkPointRange;
+    public float WalkPointRange;
 
     // [Attack]
-    public float timeBetweenAttacks;
-    bool alreadyAttacked;
-    public int playerHealth = 3;
+    public float TimeBetweenAttacks;
+    private bool _hasAttacked;
+    public int PlayerHealth = 3;
 
     // [Range Detection]
-    public float sightRange, attackRange, soundRange;
-    public bool playerInSightRange, playerInAttackRange;
+    public float SightRange;
+    public float AttackRange; 
+    public float SoundRange;
+    public bool IsPlayerInSightRange; 
+    public bool IsPlayerInAttackRange;
 
     // [Audio]
-    public float detectionThreshold = 7f;
+    public float DetectionThreshold = 7f;
 
     // [State]
     public enum EnemyState { Patrol, Chase, Attack }
-    private EnemyState currentState;
-    public bool currentlyChasing = false;
+    private EnemyState _currentState;
 
     void Awake()
     {
-        player = GameObject.Find("PlayerArmature").transform;
-        agent = GetComponent<NavMeshAgent>();
+        Player = GameObject.Find("PlayerArmature").transform;
+        Agent = GetComponent<NavMeshAgent>();
         _pathfinding = GetComponent<Pathfinding>();
-        _audioSource = player.GetComponent<AudioSource>();
         _animator = GetComponent<Animator>();
-        _playerSound = player.GetComponent<PlayerSound>();
+        _playerSound = Player.GetComponent<PlayerSound>();
     }
 
     void Start()
     {
-        psm = FindObjectOfType<PulseRateManager>();
+        _pulseRateManager = FindObjectOfType<PulseRateManager>();
 
-        if (psm == null)
+        if (_pulseRateManager == null)
         {
-            Debug.LogWarning("psm null");
+            Debug.LogWarning("Pulse Rate Manager Script not found");
         }
         // Intial state set to Patrol
-        currentState = EnemyState.Patrol;
+        _currentState = EnemyState.Patrol;
     }
 
     void Update()
@@ -68,19 +68,19 @@ public class EnemyAI : MonoBehaviour
         AnimationController();
 
         // Check if the player is within sight, attack, or sound detection range.
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, thePlayer);
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, thePlayer);
+        IsPlayerInSightRange = Physics.CheckSphere(transform.position, SightRange, ThePlayer);
+        IsPlayerInAttackRange = Physics.CheckSphere(transform.position, AttackRange, ThePlayer);
 
         // Main state machine logic.
-        switch (currentState)
+        switch (_currentState)
         {
             case EnemyState.Patrol:
-                if (playerInSightRange && !playerInAttackRange)
+                if (IsPlayerInSightRange && !IsPlayerInAttackRange)
                 {
                     Debug.LogWarning("Player within sight range, not in attack - Transitioning to Chase.");
                     TransitionToState(EnemyState.Chase);
                 }
-                else if (playerInAttackRange && playerInSightRange)
+                else if (IsPlayerInAttackRange && IsPlayerInSightRange)
                 {
                     Debug.LogWarning("Player within sight range and attack range - Transitioning to Attack.");
                     TransitionToState(EnemyState.Attack);
@@ -98,12 +98,12 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case EnemyState.Chase:
-                if (!playerInSightRange && !IsPlayerMakingNoise())
+                if (!IsPlayerInSightRange && !IsPlayerMakingNoise())
                 {
                     Debug.LogWarning("Player out of sight and not making noise - Returning to Patrol.");
                     TransitionToState(EnemyState.Patrol);
                 }
-                else if (playerInAttackRange)
+                else if (IsPlayerInAttackRange)
                 {
                     Debug.LogWarning("Player in attack range - Transitioning to Attack.");
                     TransitionToState(EnemyState.Attack);
@@ -116,10 +116,10 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case EnemyState.Attack:
-                if (!playerInAttackRange)
+                if (!IsPlayerInAttackRange)
                 {
                     Debug.LogWarning("Player out of attack range - Transitioning to Chase or Patrol.");
-                    TransitionToState(playerInSightRange ? EnemyState.Chase : EnemyState.Patrol);
+                    TransitionToState(IsPlayerInSightRange ? EnemyState.Chase : EnemyState.Patrol);
                 }
                 else
                 {
@@ -129,16 +129,16 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
-        if (psm.visibility == false)
+        if (_pulseRateManager.IsVisible == false)
         {
-            Debug.LogWarning("psm visiblity");
+            Debug.LogWarning($"Pulse Rate Manager: {_pulseRateManager.IsVisible}");
         }
     }
 
     private void Patrol()
     {
         // Enable NavMeshAgent for movement
-        agent.enabled = true;
+        Agent.enabled = true;
         Debug.Log("Patrolling");
 
         // Find new walk point if not set
@@ -151,9 +151,9 @@ public class EnemyAI : MonoBehaviour
         if (_isWalkPointSet)
         {
             // Move towards walk point
-            agent.SetDestination(walkPoint);
+            Agent.SetDestination(WalkPoint);
 
-            Vector3 direction = walkPoint - transform.position;
+            Vector3 direction = WalkPoint - transform.position;
             if (direction != Vector3.zero)
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
@@ -161,7 +161,7 @@ public class EnemyAI : MonoBehaviour
             }
 
             // Check if the destination is reached
-            if (Vector3.Distance(transform.position, walkPoint) < 9f)
+            if (Vector3.Distance(transform.position, WalkPoint) < 9f)
             {
                 _isWalkPointSet = false;
             }
@@ -173,17 +173,17 @@ public class EnemyAI : MonoBehaviour
         for (int walkPointAttempts = 0; walkPointAttempts < 2; walkPointAttempts++)
         {
             // Randomly generate a walk point within range.
-            float randomZ = Random.Range(-walkPointRange, walkPointRange);
-            float randomX = Random.Range(-walkPointRange, walkPointRange);
+            float randomZ = Random.Range(-WalkPointRange, WalkPointRange);
+            float randomX = Random.Range(-WalkPointRange, WalkPointRange);
 
-            walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+            WalkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
             // Validate walk point on the NavMesh and ground.
-            if (NavMesh.SamplePosition(walkPoint, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(WalkPoint, out NavMeshHit hit, 2f, NavMesh.AllAreas))
             {
-                if (Physics.Raycast(hit.position, -transform.up, 2f, theGround))
+                if (Physics.Raycast(hit.position, -transform.up, 2f, TheGround))
                 {
-                    walkPoint = hit.position;
+                    WalkPoint = hit.position;
                     _isWalkPointSet = true;
                     return;
                 }
@@ -202,25 +202,25 @@ public class EnemyAI : MonoBehaviour
             _isWalkPointSet = false;
         }
 
-        currentState = newState;
+        _currentState = newState;
     }
 
     private bool IsPlayerMakingNoise()
     {
-        if (playerInAttackRange || playerInSightRange)
+        if (IsPlayerInAttackRange || IsPlayerInSightRange)
         {
             return false;
         }
 
         // Check if the player is within the sound range
-        if (Vector3.Distance(transform.position, player.position) <= soundRange)
+        if (Vector3.Distance(transform.position, Player.position) <= SoundRange)
         {
-            Debug.LogWarning("Current volume if distance" + _playerSound.currentVolume);
+            Debug.LogWarning($"Current volume if distance {_playerSound.CurrentVolume}");
 
             // Return true if the player is making noise above the threshold OR is within the sound range
-            if (_playerSound.currentVolume > detectionThreshold)
+            if (_playerSound.CurrentVolume > DetectionThreshold)
             {
-                Debug.LogWarning("Player making noise, detection threshold exceeded." + _playerSound.currentVolume);
+                Debug.LogWarning($"Player making noise, detection threshold exceeded. {_playerSound.CurrentVolume}");
                 return true;
             }
         }
@@ -233,13 +233,13 @@ public class EnemyAI : MonoBehaviour
 
         Debug.LogWarning("Enter chase()");
 
-        if (!playerInSightRange && !IsPlayerMakingNoise())
+        if (!IsPlayerInSightRange && !IsPlayerMakingNoise())
         {
             Debug.LogWarning("Player out of chase range - stopping FollowPath");
             return;
         }
 
-        if (playerInSightRange)
+        if (IsPlayerInSightRange)
         {
             Debug.Log("Chasing Player");
             _pathfinding.FollowPath();
@@ -254,42 +254,42 @@ public class EnemyAI : MonoBehaviour
 
     private void Attack()
     {
-        Debug.LogWarning($"Attacking! Cooldown: {alreadyAttacked}");
+        Debug.LogWarning($"Attacking! Cooldown: {_hasAttacked}");
 
         // Stop moving to attack
-        agent.SetDestination(transform.position);
+        Agent.SetDestination(transform.position);
 
-        if (!alreadyAttacked)
+        if (!_hasAttacked)
         {
             Debug.LogWarning("Attacking the player");
 
             // Reduce player health
-            playerHealth--;
+            PlayerHealth--;
 
-            Debug.LogWarning($"Player Health: {playerHealth}");
+            Debug.LogWarning($"Player Health: {PlayerHealth}");
 
             // Destroy the player if health reaches 0
-            if (playerHealth <= 0)
+            if (PlayerHealth <= 0)
             {
                 Debug.Log("Player destroyed");
-                Destroy(player.gameObject);
+                Destroy(Player.gameObject);
             }
 
-            alreadyAttacked = true;
-            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+            _hasAttacked = true;
+            Invoke(nameof(ResetAttack), TimeBetweenAttacks);
         }
     }
 
     private void ResetAttack()
     {
         // Allow another attack
-        alreadyAttacked = false;
+        _hasAttacked = false;
     }
 
     public EnemyState GetCurrentState()
     {
         // Return the current state of the enemy.
-        return currentState;
+        return _currentState;
     }
 
     private void OnDrawGizmos()
@@ -297,24 +297,24 @@ public class EnemyAI : MonoBehaviour
         // Visualize detection ranges for debugging.
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sightRange);
+        Gizmos.DrawWireSphere(transform.position, SightRange);
 
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(transform.position, AttackRange);
 
         Gizmos.color = Color.magenta;
-        Gizmos.DrawSphere(walkPoint, 3f);
+        Gizmos.DrawSphere(WalkPoint, 3f);
 
         Gizmos.color = Color.black;
-        Gizmos.DrawWireSphere(transform.position, soundRange);
+        Gizmos.DrawWireSphere(transform.position, SoundRange);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, walkPointRange);
+        Gizmos.DrawWireSphere(transform.position, WalkPointRange);
     }
 
     private void AnimationController()
     {
-        if (currentState == EnemyState.Patrol)
+        if (_currentState == EnemyState.Patrol)
         {
             _animator.SetBool("isRunning", false);
         }
@@ -326,7 +326,7 @@ public class EnemyAI : MonoBehaviour
 
     private void RotateToPlayer()
     {
-        Vector3 playerDirection = player.position - transform.position;
+        Vector3 playerDirection = Player.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(playerDirection, Vector3.up);
         transform.rotation = rotation;
         if (playerDirection != Vector3.zero)

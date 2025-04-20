@@ -10,14 +10,14 @@ public class PlayerSound : MonoBehaviour
     public static PlayerSound Instance { get; private set; }
     
     [Header("References")]
-    private EnemyAI enemyAI;
+    private EnemyAI _enemyAI;
     private ThirdPersonController _thirdPersonController;
     [SerializeField] private EventReference _heartbeatRef;
     [SerializeField] private EventInstance _heartbeatInstance;
     
     [Header("Speed Control")]
-    public float normalSpeed = 6f;
-    public float sneakSpeed = 3f;
+    public float NormalSpeed = 6f;
+    public float SneakSpeed = 3f;
 
     [Header("Volume Control")]
     
@@ -27,7 +27,7 @@ public class PlayerSound : MonoBehaviour
 
     [SerializeField] private float _time = 0f;
     [SerializeField] private float _rate = 0.45f;
-    [SerializeField] public float currentVolume;
+    [SerializeField] public float CurrentVolume;
     [SerializeField] private bool _isHeartbeatPlaying = false;
     private bool _showDebugInfo;
 
@@ -43,7 +43,7 @@ public class PlayerSound : MonoBehaviour
         }
 
         _thirdPersonController = GetComponent<ThirdPersonController>();
-        enemyAI = GameObject.Find("Enemy").GetComponent<EnemyAI>();
+        _enemyAI = FindObjectOfType<EnemyAI>();
         
     }
 
@@ -61,16 +61,16 @@ public class PlayerSound : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _heartbeatInstance.setVolume(currentVolume);
+        _heartbeatInstance.setVolume(CurrentVolume);
         Debug.LogError(_heartbeatInstance);
-        Debug.LogError("Update() is heartbeatplaying" + _isHeartbeatPlaying);
+        Debug.LogError($"Update() is heartbeatplaying {_isHeartbeatPlaying}");
 
         PLAYBACK_STATE playbackState;
         _heartbeatInstance.getPlaybackState(out playbackState);
-        Debug.LogWarning("Playback State: " + playbackState);
-        Debug.LogWarning("Out Current Vol: " + _heartbeatInstance.getVolume(out currentVolume));
+        Debug.LogWarning($"Playback State: {playbackState}");
+        Debug.LogWarning($"Out Current Vol: {_heartbeatInstance.getVolume(out CurrentVolume)}");
 
-        Debug.LogWarning("Current volume:" + currentVolume);
+        Debug.LogWarning($"Current volume: {CurrentVolume}");
 
         bool isSneaking = Input.GetKey(KeyCode.C);
 
@@ -91,7 +91,7 @@ public class PlayerSound : MonoBehaviour
         }
 
         // Begins footstep logic if player is moving and not sneaking.
-        if (_thirdPersonController.isMoving == true && !isSneaking)
+        if (_thirdPersonController.IsMoving == true && !isSneaking)
         {
             PlayHeartbeatSound();
         }
@@ -100,7 +100,7 @@ public class PlayerSound : MonoBehaviour
             StopHeartbeatSound();
         }
 
-        if (_thirdPersonController.isMoving == true)
+        if (_thirdPersonController.IsMoving == true)
         {
             _time += Time.deltaTime;
             //Debug.Log("Walking: " + isWalking);
@@ -117,10 +117,9 @@ public class PlayerSound : MonoBehaviour
 
     void PlayHeartbeatSound()
     {
-        
         // Increases volume while the function is active
-        currentVolume = Mathf.Clamp(currentVolume + _volumeIncrease * Time.deltaTime, 0, _maxVolume);
-        Debug.Log("Footsteps volume increasing: " + _heartbeatInstance);
+        CurrentVolume = Mathf.Clamp(CurrentVolume + _volumeIncrease * Time.deltaTime, 0, _maxVolume);
+        Debug.Log($"Footsteps volume increasing: {_heartbeatInstance}");
 
         if(!_isHeartbeatPlaying)
         {       
@@ -131,7 +130,7 @@ public class PlayerSound : MonoBehaviour
     void StopHeartbeatSound()
     {
         // If player stops moving then volume is set to 0 and audio stops
-        if (!_thirdPersonController.isMoving && !enemyAI.playerInSightRange)
+        if (!_thirdPersonController.IsMoving && !_enemyAI.IsPlayerInSightRange)
         {
             _isHeartbeatPlaying = false;
             // _heartbeatInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
@@ -143,26 +142,26 @@ public class PlayerSound : MonoBehaviour
     void Sneak()
     {
         // Decreases volume while function is active
-        currentVolume = Mathf.Clamp(currentVolume - (_volumeDecrease * Time.deltaTime), 0, _maxVolume);
-        Debug.Log("Footsteps volume decreasing: " + currentVolume);
+        CurrentVolume = Mathf.Clamp(CurrentVolume - (_volumeDecrease * Time.deltaTime), 0, _maxVolume);
+        Debug.Log($"Footsteps volume decreasing: {CurrentVolume}");
 
         // If audio is below 0, player is moving and audio is playing then stops the audio.
-        if (currentVolume <= 0 && !_thirdPersonController.isMoving && _isHeartbeatPlaying)
+        if (CurrentVolume <= 0 && !_thirdPersonController.IsMoving && _isHeartbeatPlaying)
         {
             // _heartbeatInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             Debug.Log("Sneaking has reduced volume to 0 - audio stopped");
         }
 
-        // Reduces speed to sneakSpeed
-        _thirdPersonController.MoveSpeed = sneakSpeed;
+        // Reduces speed to SneakSpeed
+        _thirdPersonController.MoveSpeed = SneakSpeed;
     }
 
     void RestoreSpeed()
     {
-        // Restores speed from sneakSpeed to original
+        // Restores speed from SneakSpeed to original
         if (_thirdPersonController != null)
         {
-            _thirdPersonController.MoveSpeed = normalSpeed;
+            _thirdPersonController.MoveSpeed = NormalSpeed;
         }
     }
 
@@ -181,13 +180,13 @@ public class PlayerSound : MonoBehaviour
             customStyle.normal.textColor = Color.red;
 
             // Display information on the screen
-            GUI.Label(new Rect(10, 10, 500, 30), "Volume: [" + currentVolume + "]", customStyle);
+            GUI.Label(new Rect(10, 10, 500, 30), "Volume: [" + CurrentVolume + "]", customStyle);
             GUI.Label(new Rect(10, 40, 500, 30), "Player Speed: [" + _thirdPersonController.MoveSpeed + "]", customStyle);
             GUI.Label(new Rect(10, 70, 500, 30), "Player Sneaking: [" + Input.GetKey(KeyCode.LeftShift) + "]", customStyle);
-            GUI.Label(new Rect(10, 100, 500, 30), "Player Moving: [" + _thirdPersonController.isMoving + "]", customStyle);
-            GUI.Label(new Rect(10, 130, 500, 30), "Player Health: [" + enemyAI.playerHealth + "]", customStyle);
+            GUI.Label(new Rect(10, 100, 500, 30), "Player Moving: [" + _thirdPersonController.IsMoving + "]", customStyle);
+            GUI.Label(new Rect(10, 130, 500, 30), "Player Health: [" + _enemyAI.PlayerHealth + "]", customStyle);
 
-            GUI.Label(new Rect(10, 180, 500, 30), "Enemy State: [" + enemyAI.GetCurrentState() + "]", customStyle);
+            GUI.Label(new Rect(10, 180, 500, 30), "Enemy State: [" + _enemyAI.GetCurrentState() + "]", customStyle);
         }
     }
 

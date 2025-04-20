@@ -7,31 +7,30 @@ public class Pathfinding : MonoBehaviour
     // [References]
     public Transform seeker;
     public Transform target;
-    private NavMeshAgent agent;
-    private EnemyAI enemyAI;
+    private NavMeshAgent _agent;
 
     // [Pathfinding Setup]
-    private Grid grid;
+    private Grid _grid;
     public List<Node> path;
 
     // [Pathing and Movement]
     public int currentNodeIndex = 0;
     private Vector3 lastTargetPosition;
-    private float pathThreshold = 1f;
-    private float pathRecalcCooldown = 0.2f;
-    private float nextPathRecalcTime;
+    private float _pathThreshold = 1f;
+    private float _pathRecalcCooldown = 0.2f;
+    private float _nextPathRecalcTime;
     public float speed = 2f;
 
     void Start()
     {
-        grid = FindObjectOfType<Grid>();
-        agent = seeker.GetComponent<NavMeshAgent>();
+        _grid = FindObjectOfType<Grid>();
+        _agent = seeker.GetComponent<NavMeshAgent>();
 
-        if (grid == null)
+        if (_grid == null)
         {
             Debug.LogError("Grid component is missing!");
         }
-        if (agent == null)
+        if (_agent == null)
         {
             Debug.LogError("NavMeshAgent component is missing!");
         }
@@ -42,11 +41,11 @@ public class Pathfinding : MonoBehaviour
     void Update()
     {
         // Check if it's time to recalculate the path based on the target's movement.
-        if (Time.time >= nextPathRecalcTime && Vector3.Distance(lastTargetPosition, target.position) > pathThreshold)
+        if (Time.time >= _nextPathRecalcTime && Vector3.Distance(lastTargetPosition, target.position) > _pathThreshold)
         {
             FindPath(seeker.position, target.position);
             lastTargetPosition = target.position;
-            nextPathRecalcTime = Time.time + pathRecalcCooldown;
+            _nextPathRecalcTime = Time.time + _pathRecalcCooldown;
         }
 
         // Continuously follow the path if it exists.
@@ -60,8 +59,8 @@ public class Pathfinding : MonoBehaviour
         //Debug.Log($"Enemy {gameObject.name} recalculating path.");
 
         // Convert the start and target position to a grid node.
-        Node startNode = grid.NodeFromWorldPoint(startPos);
-        Node targetNode = grid.NodeFromWorldPoint(targetPos);
+        Node startNode = _grid.NodeFromWorldPoint(startPos);
+        Node targetNode = _grid.NodeFromWorldPoint(targetPos);
 
         // If either the start or target node is not walkable, we can't calculate the path.
         if (!startNode.walkable || !targetNode.walkable)
@@ -104,12 +103,12 @@ public class Pathfinding : MonoBehaviour
             if (node == targetNode)
             {
                 RetracePath(startNode, targetNode);
-                Debug.Log("Path found with " + path.Count + " nodes.");
+                Debug.Log($"Path found with {path.Count} nodes.");
                 return;
             }
 
             // Evaluate neighboring nodes
-            foreach (Node neighbour in grid.GetNeighbours(node))
+            foreach (Node neighbour in _grid.GetNeighbours(node))
             {
                 // Skip non-walkable nodes or already evaluated nodes
                 if (!neighbour.walkable || closedSet.Contains(neighbour))
@@ -155,7 +154,7 @@ public class Pathfinding : MonoBehaviour
 
         // Reverse the path to go from start to end and visualize the path
         path.Reverse();
-        grid.HighlightPath(path, Color.black);
+        _grid.HighlightPath(path, Color.black);
 
         // Convert grid path to NavMesh path - set for agent
         if (path.Count > 0)
@@ -178,7 +177,7 @@ public class Pathfinding : MonoBehaviour
             }
 
             // Set the agent path to follow the NavMesh path.
-            agent.SetPath(CreateNavMeshPath(navPath));
+            _agent.SetPath(CreateNavMeshPath(navPath));
         }
     }
 
@@ -187,7 +186,7 @@ public class Pathfinding : MonoBehaviour
     {
         // Calculate the path to the last position
         NavMeshPath navPath = new NavMeshPath();
-        agent.CalculatePath(positions[positions.Count - 1], navPath);
+        _agent.CalculatePath(positions[positions.Count - 1], navPath);
         return navPath;
     }
 

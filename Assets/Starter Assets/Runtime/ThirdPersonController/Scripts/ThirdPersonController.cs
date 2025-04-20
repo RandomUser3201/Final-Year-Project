@@ -90,7 +90,7 @@ namespace StarterAssets
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
 
-        public bool isMoving = false;
+        public bool IsMoving = false;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -236,11 +236,11 @@ namespace StarterAssets
 
             if (_input.move.magnitude > 0.5f)
             {
-                isMoving = true;
+                IsMoving = true;
             }
             else 
             {
-                isMoving = false;
+                IsMoving = false;
             }
 
 
@@ -401,12 +401,12 @@ namespace StarterAssets
         {
             // if (animationEvent.animatorClipInfo.weight > 0.5f)
             // {
-            //     isMoving = true;
+            //     IsMoving = true;
             //     //AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             // }
             // else
             // {
-            //     isMoving = false;
+            //     IsMoving = false;
             // }
         }
 

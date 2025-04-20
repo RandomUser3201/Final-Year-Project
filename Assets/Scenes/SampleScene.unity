@@ -356,7 +356,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 25
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -390,11 +390,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 938593274}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -259, y: 82}
-  m_SizeDelta: {x: 193.5576, y: 86.947}
-  m_Pivot: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 179.7963, y: 33.64331}
+  m_Pivot: {x: 0, y: 0}
 --- !u!4 &86462069 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 3c4128e82def34347a6623ea90212fcc, type: 3}
@@ -486,6 +486,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 100000, guid: 3c4128e82def34347a6623ea90212fcc, type: 3}
   m_PrefabInstance: {fileID: 1462677522}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &237390616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 237390617}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &237390617
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 237390616}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.02, y: 1.39, z: -0.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 849751193}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &251041579
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -980,6 +1011,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4201043880667706657, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: goalPoint
+      value: 
+      objectReference: {fileID: 1694725282}
+    - target: {fileID: 4201043880667706657, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: timerText
+      value: 
+      objectReference: {fileID: 259031784}
+    - target: {fileID: 4201043880667706657, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: winMessage
+      value: 
+      objectReference: {fileID: 1301349005}
     - target: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       propertyPath: m_Name
       value: PlayerArmature
@@ -1008,9 +1051,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1183818775}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1756319745}
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1756319743}
@@ -2264,6 +2304,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7249e6ecd2c463b42961b55389c33326, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1247142204}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7249e6ecd2c463b42961b55389c33326, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 237390617}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7249e6ecd2c463b42961b55389c33326, type: 3}
       insertIndex: -1
@@ -2306,25 +2349,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc276d909fb193243902504b501bd27c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 849751195}
-  player: {fileID: 1756319746}
-  theGround:
+  Agent: {fileID: 0}
+  Player: {fileID: 0}
+  TheGround:
     serializedVersion: 2
-    m_Bits: 55
-  thePlayer:
+    m_Bits: 0
+  ThePlayer:
     serializedVersion: 2
-    m_Bits: 64
-  walkPoint: {x: 5, y: 1, z: 21}
-  walkPointRange: 15
-  timeBetweenAttacks: 2
-  playerHealth: 3
-  sightRange: 24
-  attackRange: 5
-  soundRange: 40
-  playerInSightRange: 0
-  playerInAttackRange: 0
-  detectionThreshold: 7
-  currentlyChasing: 0
+    m_Bits: 0
+  WalkPoint: {x: 0, y: 0, z: 0}
+  WalkPointRange: 0
+  TimeBetweenAttacks: 0
+  PlayerHealth: 3
+  SightRange: 0
+  AttackRange: 0
+  SoundRange: 0
+  IsPlayerInSightRange: 0
+  IsPlayerInAttackRange: 0
+  DetectionThreshold: 7
 --- !u!195 &849751195
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3174,25 +3216,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc276d909fb193243902504b501bd27c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 1091014627}
-  player: {fileID: 0}
-  theGround:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  thePlayer:
+  Agent: {fileID: 0}
+  Player: {fileID: 0}
+  TheGround:
     serializedVersion: 2
     m_Bits: 0
-  walkPoint: {x: 5, y: 1, z: 21}
-  walkPointRange: 15
-  timeBetweenAttacks: 2
-  playerHealth: 3
-  sightRange: 20
-  attackRange: 3
-  soundRange: 30
-  playerInSightRange: 0
-  playerInAttackRange: 0
-  detectionThreshold: 0.7
-  currentlyChasing: 0
+  ThePlayer:
+    serializedVersion: 2
+    m_Bits: 0
+  WalkPoint: {x: 0, y: 0, z: 0}
+  WalkPointRange: 0
+  TimeBetweenAttacks: 0
+  PlayerHealth: 3
+  SightRange: 0
+  AttackRange: 0
+  SoundRange: 0
+  IsPlayerInSightRange: 0
+  IsPlayerInAttackRange: 0
+  DetectionThreshold: 7
 --- !u!195 &1091014627
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3737,7 +3778,7 @@ MonoBehaviour:
   baudRate: 9600
   heartRate: 0
   bpmText: {fileID: 84009819}
-  visibility: 1
+  IsVisible: 1
 --- !u!4 &1185461263
 Transform:
   m_ObjectHideFlags: 0
@@ -5168,7 +5209,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 3.0000305, y: 90.175}
+  m_AnchoredPosition: {x: 3, y: 90.175}
   m_SizeDelta: {x: 193.5576, y: 86.947}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1525774352
@@ -5630,7 +5671,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &1694725279
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5659,7 +5700,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694725278}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -6006,23 +6047,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1756319745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1756319734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2037b4eb011cba9418a486d8adb11e48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 6
-  goalPoint: {fileID: 1694725282}
-  winMessage: {fileID: 1301349005}
-  timerText: {fileID: 259031784}
-  totalTime: 360
 --- !u!4 &1756319746 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
@@ -6272,25 +6296,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc276d909fb193243902504b501bd27c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 1824866387}
-  player: {fileID: 1756319746}
-  theGround:
+  Agent: {fileID: 0}
+  Player: {fileID: 0}
+  TheGround:
     serializedVersion: 2
-    m_Bits: 55
-  thePlayer:
+    m_Bits: 0
+  ThePlayer:
     serializedVersion: 2
-    m_Bits: 64
-  walkPoint: {x: 5, y: 1, z: 21}
-  walkPointRange: 15
-  timeBetweenAttacks: 2
-  playerHealth: 3
-  sightRange: 24
-  attackRange: 5
-  soundRange: 40
-  playerInSightRange: 0
-  playerInAttackRange: 0
-  detectionThreshold: 0.7
-  currentlyChasing: 0
+    m_Bits: 0
+  WalkPoint: {x: 0, y: 0, z: 0}
+  WalkPointRange: 0
+  TimeBetweenAttacks: 0
+  PlayerHealth: 3
+  SightRange: 0
+  AttackRange: 0
+  SoundRange: 0
+  IsPlayerInSightRange: 0
+  IsPlayerInAttackRange: 0
+  DetectionThreshold: 7
 --- !u!1001 &1828577666
 PrefabInstance:
   m_ObjectHideFlags: 0

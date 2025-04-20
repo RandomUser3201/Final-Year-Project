@@ -7,11 +7,12 @@ using UnityEngine.UI;
 public class HeartRateData : MonoBehaviour
 {
     public static HeartRateData Instance;
-    public int playerAge = 20;  
-    public int minHR, maxHR;
+    public int PlayerAge = 20;  
+    public int MinHR; 
+    public int MaxHR;
 
-    public Dropdown ageSelector;
-    private Dictionary<int, (int min, int max, int maxHR)> heartRateTable = new Dictionary<int, (int, int, int)>
+    public Dropdown AgeSelector;
+    private Dictionary<int, (int min, int max, int MaxHR)> heartRateTable = new Dictionary<int, (int, int, int)>
     {
 
     // Age - Target HR - Zone - Predicted MaxHR
@@ -43,52 +44,43 @@ public class HeartRateData : MonoBehaviour
 
     void Start()
     {
-        if (ageSelector == null)
+        if (AgeSelector == null)
         {
             Debug.LogError("Age Selector Dropdown is not assigned in the Inspector");
             return;
         }
 
-        ageSelector.onValueChanged.AddListener(delegate { SetPlayerAge(); });
+        AgeSelector.onValueChanged.AddListener(delegate { SetPlayerAge(); });
 
         SetPlayerAge();
     }
 
     public void SetPlayerAge()
     {
-        if (int.TryParse(ageSelector.options[ageSelector.value].text, out int selectedAge))
+        if (int.TryParse(AgeSelector.options[AgeSelector.value].text, out int _selectedAge))
         {
-            playerAge = selectedAge;
+            PlayerAge = _selectedAge;
 
-            if (heartRateTable.ContainsKey(selectedAge))
+            if (heartRateTable.ContainsKey(_selectedAge))
             {
-                (minHR, maxHR, _) = heartRateTable[selectedAge];
+                (MinHR, MaxHR, _) = heartRateTable[_selectedAge];
             }
             else
             {
-                minHR = 90;
-                maxHR = 170;
+                MinHR = 90;
+                MaxHR = 170;
             }
-            Debug.Log("Updated Player Age: " + playerAge + ", MinHR: " + minHR + ", MaxHR: " + maxHR);
+            Debug.Log($"Updated Player Age: {PlayerAge} MinHR: {MinHR} MaxHR: {MaxHR}");
         }
         else
         {
-            Debug.LogError("Invalid age selected: " + ageSelector.options[ageSelector.value].text);
+            Debug.LogError($"Invalid age selected: {AgeSelector.options[AgeSelector.value].text}");
         }
     }
 
     public void StartGame()
     {
-        // string selectedAgeText = ageSelector.options[ageSelector.value].text;
-        // Debug.Log("Selected age text: " + selectedAgeText);
-        
-        // int selectedAge = int.Parse(selectedAgeText);   
-        // Debug.Log("Selected age conv to int): " + selectedAge);        
-        // HeartRateData.Instance.SetPlayerAge(selectedAge);
-        
-        // SceneManager.LoadScene("SampleScene");
-
-        Debug.Log("Starting game with Age: " + playerAge);
+        Debug.Log($"Starting game with Age: {PlayerAge}");
         SceneManager.LoadScene("SampleScene");
     }
 }
