@@ -161,7 +161,7 @@ namespace StarterAssets
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-            Debug.LogWarning($"Player Magnitude {_input.move.magnitude}");
+            //Debug.LogWarning($"Player Magnitude {_input.move.magnitude}");
             JumpAndGravity();
             GroundedCheck();
             Move();

@@ -967,6 +967,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 145996362402718374, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: _maxVolume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 145996362402718374, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: _volumeDecrease
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 145996362402718374, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: _volumeIncrease
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1039,6 +1051,22 @@ PrefabInstance:
       propertyPath: GroundedRadius
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8366767855479062576, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: GoalPoint
+      value: 
+      objectReference: {fileID: 1694725282}
+    - target: {fileID: 8366767855479062576, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: TimerText
+      value: 
+      objectReference: {fileID: 259031784}
+    - target: {fileID: 8366767855479062576, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: TotalTime
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8366767855479062576, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: winMessage
+      value: 
+      objectReference: {fileID: 1301349005}
     m_RemovedComponents:
     - {fileID: 5885216827943657505, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
     - {fileID: 4190545370086601961, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
@@ -1053,13 +1081,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1756319743}
-    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1756319742}
-    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1756319747}
+      addedObject: {fileID: 1756319755}
   m_SourcePrefab: {fileID: 100100000, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
 --- !u!4 &322586143 stripped
 Transform:
@@ -2349,24 +2371,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc276d909fb193243902504b501bd27c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Agent: {fileID: 0}
-  Player: {fileID: 0}
+  Agent: {fileID: 849751195}
+  Player: {fileID: 1756319746}
   TheGround:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   ThePlayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   WalkPoint: {x: 0, y: 0, z: 0}
-  WalkPointRange: 0
-  TimeBetweenAttacks: 0
+  WalkPointRange: 15
+  TimeBetweenAttacks: 2
   PlayerHealth: 3
-  SightRange: 0
-  AttackRange: 0
-  SoundRange: 0
+  SightRange: 24
+  AttackRange: 5
+  SoundRange: 40
   IsPlayerInSightRange: 0
   IsPlayerInAttackRange: 0
-  DetectionThreshold: 7
+  DetectionThreshold: 0.7
 --- !u!195 &849751195
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2478,14 +2500,14 @@ MonoBehaviour:
   Event: 
   EventPlayTrigger: 1
   EventStopTrigger: 0
-  AllowFadeout: 1
+  AllowFadeout: 0
   TriggerOnce: 0
   Preload: 0
   NonRigidbodyVelocity: 0
   Params: []
-  OverrideAttenuation: 1
+  OverrideAttenuation: 0
   OverrideMinDistance: 1
-  OverrideMaxDistance: 30
+  OverrideMaxDistance: 20
 --- !u!4 &898230030 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 3c4128e82def34347a6623ea90212fcc, type: 3}
@@ -3761,7 +3783,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1185461262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3779,6 +3801,8 @@ MonoBehaviour:
   heartRate: 0
   bpmText: {fileID: 84009819}
   IsVisible: 1
+  _minBufferZone: 15
+  _maxBufferZone: 30
 --- !u!4 &1185461263
 Transform:
   m_ObjectHideFlags: 0
@@ -5671,7 +5695,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1694725279
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5997,62 +6021,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
   m_PrefabInstance: {fileID: 322586142}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &1756319742
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1756319734}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!136 &1756319743
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1756319734}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1756319746 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
   m_PrefabInstance: {fileID: 322586142}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1756319747
+--- !u!114 &1756319755
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

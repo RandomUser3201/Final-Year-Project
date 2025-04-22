@@ -501,10 +501,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c15171fe2b8358478769733de294175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAge: 20
-  minHR: 0
-  maxHR: 0
-  ageSelector: {fileID: 917954228}
+  PlayerAge: 20
+  MinHR: 0
+  MaxHR: 0
+  AgeSelector: {fileID: 917954228}
 --- !u!4 &509269991
 Transform:
   m_ObjectHideFlags: 0

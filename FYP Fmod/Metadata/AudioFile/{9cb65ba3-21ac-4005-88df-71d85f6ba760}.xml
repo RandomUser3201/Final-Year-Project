@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{9cb65ba3-21ac-4005-88df-71d85f6ba760}">
+		<property name="assetPath">
+			<value>Male, Breathing Intensely, Inside Head.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>20.327999999999999</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{47f88b6a-ed0e-413b-94db-23068b83b052}</destination>
+		</relationship>
+	</object>
+</objects>

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,15 +9,15 @@ public class HeartRateData : MonoBehaviour
 {
     public static HeartRateData Instance;
     public int PlayerAge = 20;  
-    public int MinHR; 
+    public int MinHR;
     public int MaxHR;
 
     public Dropdown AgeSelector;
-    private Dictionary<int, (int min, int max, int MaxHR)> heartRateTable = new Dictionary<int, (int, int, int)>
+    private Dictionary<int, (int min, int max, int maxHR)> heartRateTable = new Dictionary<int, (int, int, int)>
     {
 
     // Age - Target HR - Zone - Predicted MaxHR
-        { 20, (120, 170, 200) },
+        { 20, (120, 160, 200) },
         { 25, (117, 166, 195) },
         { 30, (114, 162, 190) },
         { 35, (111, 157, 185) },
@@ -61,6 +62,7 @@ public class HeartRateData : MonoBehaviour
         {
             PlayerAge = _selectedAge;
 
+            // Sets default age if not selected
             if (heartRateTable.ContainsKey(_selectedAge))
             {
                 (MinHR, MaxHR, _) = heartRateTable[_selectedAge];
@@ -70,6 +72,7 @@ public class HeartRateData : MonoBehaviour
                 MinHR = 90;
                 MaxHR = 170;
             }
+
             Debug.Log($"Updated Player Age: {PlayerAge} MinHR: {MinHR} MaxHR: {MaxHR}");
         }
         else
@@ -84,3 +87,4 @@ public class HeartRateData : MonoBehaviour
         SceneManager.LoadScene("SampleScene");
     }
 }
+

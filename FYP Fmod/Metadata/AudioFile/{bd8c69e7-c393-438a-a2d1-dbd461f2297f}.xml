@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{bd8c69e7-c393-438a-a2d1-dbd461f2297f}">
+		<property name="assetPath">
+			<value>Clicky, 83 BPM.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>60.024000000000001</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{47f88b6a-ed0e-413b-94db-23068b83b052}</destination>
+		</relationship>
+	</object>
+</objects>

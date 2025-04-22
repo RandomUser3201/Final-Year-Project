@@ -1037,7 +1037,9 @@ GameObject:
   - component: {fileID: 135756642000475821}
   - component: {fileID: 4416926081852918493}
   - component: {fileID: 145996362402718374}
-  - component: {fileID: 4201043880667706657}
+  - component: {fileID: 8366767855479062576}
+  - component: {fileID: 5274253818131311437}
+  - component: {fileID: 5982310216914247921}
   m_Layer: 8
   m_Name: PlayerArmature
   m_TagString: Player
@@ -1154,7 +1156,7 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
-  isMoving: 0
+  IsMoving: 0
 --- !u!114 &135756642000475821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1291,16 +1293,16 @@ MonoBehaviour:
       Data3: -567305598
       Data4: -883632667
     Path: event:/HeartbeatSFX
-  normalSpeed: 6
-  sneakSpeed: 3
+  NormalSpeed: 6
+  SneakSpeed: 3
   _volumeIncrease: 1
   _volumeDecrease: 1
   _maxVolume: 10
   _time: 0
   _rate: 0.5
-  currentVolume: 0
+  CurrentVolume: 0
   _isHeartbeatPlaying: 0
---- !u!114 &4201043880667706657
+--- !u!114 &8366767855479062576
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1309,13 +1311,63 @@ MonoBehaviour:
   m_GameObject: {fileID: 4416926081852918481}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d61aec225695e740837d7dc211332e3, type: 3}
+  m_Script: {fileID: 11500000, guid: ccece47342ff05e4e851714d8bc287c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goalPoint: {fileID: 0}
+  GoalPoint: {fileID: 0}
   winMessage: {fileID: 0}
-  timerText: {fileID: 0}
-  totalTime: 60
+  TimerText: {fileID: 0}
+  TotalTime: 60
+--- !u!136 &5274253818131311437
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &5982310216914247921
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0

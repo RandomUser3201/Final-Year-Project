@@ -36,7 +36,7 @@ public class EnemyAI : MonoBehaviour
     public bool IsPlayerInAttackRange;
 
     // [Audio]
-    public float DetectionThreshold = 7f;
+    public float DetectionThreshold = 0.7f;
 
     // [State]
     public enum EnemyState { Patrol, Chase, Attack }

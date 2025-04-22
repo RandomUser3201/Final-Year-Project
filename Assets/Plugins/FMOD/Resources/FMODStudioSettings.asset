@@ -161,8 +161,8 @@ MonoBehaviour:
   switchSettingsMigration: 1
   HasSourceProject: 1
   HasPlatforms: 1
-  sourceProjectPath: ../FYP Fmod/FYP Fmod.fspro
-  sourceBankPath: ../FYP Fmod/Build
+  sourceProjectPath: FYP Fmod/FYP Fmod.fspro
+  sourceBankPath: FYP Fmod/Build
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 5
   ShowBankRefreshWindow: 1

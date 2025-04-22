@@ -12,6 +12,9 @@ public class PlayerSound : MonoBehaviour
     [Header("References")]
     private EnemyAI _enemyAI;
     private ThirdPersonController _thirdPersonController;
+    private HeartRateData _heartRateData;
+    private PulseRateManager _pulseRateManager;
+
     [SerializeField] private EventReference _heartbeatRef;
     [SerializeField] private EventInstance _heartbeatInstance;
     
@@ -21,8 +24,8 @@ public class PlayerSound : MonoBehaviour
 
     [Header("Volume Control")]
     
-    [SerializeField] private float _volumeIncrease = 0.10f;
-    [SerializeField] private float _volumeDecrease = 0.10f;
+    [SerializeField] private float _volumeIncrease = 0.1f;
+    [SerializeField] private float _volumeDecrease = 0.1f;
     [SerializeField] private float _maxVolume = 1f;
 
     [SerializeField] private float _time = 0f;
@@ -44,7 +47,8 @@ public class PlayerSound : MonoBehaviour
 
         _thirdPersonController = GetComponent<ThirdPersonController>();
         _enemyAI = FindObjectOfType<EnemyAI>();
-        
+        _heartRateData = FindObjectOfType<HeartRateData>();
+        _pulseRateManager = FindObjectOfType<PulseRateManager>();
     }
 
     void Start()
@@ -62,15 +66,15 @@ public class PlayerSound : MonoBehaviour
     void Update()
     {
         _heartbeatInstance.setVolume(CurrentVolume);
-        Debug.LogError(_heartbeatInstance);
-        Debug.LogError($"Update() is heartbeatplaying {_isHeartbeatPlaying}");
+        // Debug.LogError(_heartbeatInstance);
+        // Debug.LogError($"Update() is heartbeatplaying {_isHeartbeatPlaying}");
 
         PLAYBACK_STATE playbackState;
         _heartbeatInstance.getPlaybackState(out playbackState);
-        Debug.LogWarning($"Playback State: {playbackState}");
-        Debug.LogWarning($"Out Current Vol: {_heartbeatInstance.getVolume(out CurrentVolume)}");
+        // Debug.LogWarning($"Playback State: {playbackState}");
+        // Debug.LogWarning($"Out Current Vol: {_heartbeatInstance.getVolume(out CurrentVolume)}");
 
-        Debug.LogWarning($"Current volume: {CurrentVolume}");
+        // Debug.LogWarning($"Current volume: {CurrentVolume}");
 
         bool isSneaking = Input.GetKey(KeyCode.C);
 
@@ -122,7 +126,7 @@ public class PlayerSound : MonoBehaviour
         Debug.Log($"Footsteps volume increasing: {_heartbeatInstance}");
 
         if(!_isHeartbeatPlaying)
-        {       
+        {
             Debug.LogWarning("Heartbeat started");
         }
     }
@@ -133,8 +137,8 @@ public class PlayerSound : MonoBehaviour
         if (!_thirdPersonController.IsMoving && !_enemyAI.IsPlayerInSightRange)
         {
             _isHeartbeatPlaying = false;
-            // _heartbeatInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            _heartbeatInstance.setVolume(0);
+            //_heartbeatInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            //_heartbeatInstance.setVolume(0);
             Debug.Log("Footsteps stopped");
         }
     }
@@ -168,7 +172,6 @@ public class PlayerSound : MonoBehaviour
     public void PlayFootsteps()
     {
         RuntimeManager.PlayOneShot("event:/Footsteps");
-        
     }
 
     private void OnGUI()
@@ -177,16 +180,18 @@ public class PlayerSound : MonoBehaviour
         {
             GUIStyle customStyle = new GUIStyle();
             customStyle.fontSize = 30;
-            customStyle.normal.textColor = Color.red;
+            customStyle.normal.textColor = Color.white;
 
             // Display information on the screen
-            GUI.Label(new Rect(10, 10, 500, 30), "Volume: [" + CurrentVolume + "]", customStyle);
-            GUI.Label(new Rect(10, 40, 500, 30), "Player Speed: [" + _thirdPersonController.MoveSpeed + "]", customStyle);
-            GUI.Label(new Rect(10, 70, 500, 30), "Player Sneaking: [" + Input.GetKey(KeyCode.LeftShift) + "]", customStyle);
-            GUI.Label(new Rect(10, 100, 500, 30), "Player Moving: [" + _thirdPersonController.IsMoving + "]", customStyle);
-            GUI.Label(new Rect(10, 130, 500, 30), "Player Health: [" + _enemyAI.PlayerHealth + "]", customStyle);
+            GUI.Label(new Rect(10, 10, 500, 30), $"Volume: [{CurrentVolume}]", customStyle);
+            GUI.Label(new Rect(10, 40, 500, 30), $"Player Speed: [{_thirdPersonController.MoveSpeed}]", customStyle);
+            GUI.Label(new Rect(10, 70, 500, 30), $"Player Sneaking: [{Input.GetKey(KeyCode.C)}]", customStyle);
+            GUI.Label(new Rect(10, 100, 500, 30), $"Player Moving:  [{_thirdPersonController.IsMoving}]", customStyle);
+            GUI.Label(new Rect(10, 130, 500, 30), $"Player Health: [{_enemyAI.PlayerHealth}]", customStyle);
 
-            GUI.Label(new Rect(10, 180, 500, 30), "Enemy State: [" + _enemyAI.GetCurrentState() + "]", customStyle);
+            GUI.Label(new Rect(10, 180, 500, 30), $"Enemy State: [{_enemyAI.GetCurrentState()}]", customStyle);
+            GUI.Label(new Rect(10, 210, 500, 30), $"PlayerAge: [{_heartRateData.PlayerAge}] ({_heartRateData.MinHR}, {_heartRateData.MaxHR})", customStyle);
+            GUI.Label(new Rect(10, 240, 500, 30), $"Current Heart Rate: [{_pulseRateManager.heartRate}]", customStyle);
         }
     }
 
