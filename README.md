@@ -1,10 +1,10 @@
-# 3D Prison Game
+# Heart Rate-Driven Gameplay in a 3D Stealth Game: Exploring Dynamic Difficulty Mechanisms
 
-This project is a stealth-based 3D prison game that challenges player to navigate to the goal while avoiding the Enemy. The AI uses sound-based mechanics, enabling NPCs to hear, patrol, and chase the player based on auditory cues.
+The artefact is a stealth-based 3D game that challenges player to navigate to the goal while avoiding the Enemy. The Enemy AI uses sound-based mechanics, enabling it to hear, patrol, and chase the player based on auditory cues and heart rate value.
 
 ## Summary:
 
-Due to a combination of overestimating my abilities, underestimating the complexity of certain tasks and inadequate project management, I was unable to implement all the planned features within the given timeframe. These features relate to multiple NPCs, player animations and assets, and better camera control.
+Due to a combination of overestimating my abilities, underestimating the complexity of certain tasks and inadequate project management, I was unable to implement all the planned features within the given timeframe. These features relate to multiple NPCs, player animations and assets, and better camera control. However, managing 
 
 ### Implemented:
 - A Pathfinding*: Ensures efficient and dynamic movement for NPCs.
@@ -16,7 +16,7 @@ To play the game open the "bin" folder and open the .exe".
 
 ### Controls:
 - W, A, S, D -> Basic Movement 
-- Left-Shift -> Sneak 
+- C -> Sneak (Decreases Volume)
 - Space -> Display Information
 
 ### Gameplay
@@ -74,6 +74,43 @@ December was a highly productive but challenging month. After losing previous wo
 Enhancements included adding gizmos for debugging, improving obstacle avoidance, and refining A* pathfinding to activate only when the player was in sight. This made enemy behavior more realistic and efficient. Audio detection and player sound mechanics were also integrated: footsteps sounds were added for the player, and sneaking (using the L-Shift key) reduced noise and player speed.
 
 Code quality was a focus this month. A superlinter workflow was set up to identify and fix whitespace errors, and detailed code comments were added for clarity. Additional improvements included fixing a bug that broke all enemy states, reworking enemy AI states, and adding an end-game timer. The game now supports a cohesive enemy state system, consisting of patrol, chase, and attack behaviors based on player noise and visibility. These changes brought the project much closer to its intended vision, setting up a strong foundation for further enhancements.
+
+### January: Enemy AI Overhaul, Stealth Mechanics & Game Polish
+January focused on refining enemy AI and implementing sound-based detection. Enemies now respond to player-generated noise, with louder movement triggering a chase. Players can sneak (L-Shift) or stay still to avoid detection.
+AI states were reworked into Patrol, Chase, and Attack, based on sight and sound. Key bugs related to LayerMasks and A* Pathfinding were fixed, ensuring stable enemy behavior.
+Gameplay was polished with a win condition (reaching the finish before time runs out), improved camera movement, and a GUI update with control instructions. Code was also cleaned and commented for clarity.
+
+### February: Heart Rate Integration, Visibility Toggle & Difficulty Mechanics
+
+During this month the Pulse Rate Manager and Arduino integration to track heart rate were introduced. The goal was to toggle visibility based on heart rate, but this feature is still in progress.
+Detection radius was successfully adjusted according to the player's heart rate, allowing the enemy to react more dynamically. A bug in script referencing was fixed, taking 3 hours but resolving the issue.
+A fog effect was added, along with a difficulty mechanic: if the player’s heart rate exceeds 120 for more than 6 seconds, enemy speed increases to 100 (temporarily).
+
+### March: Heart Rate Zones, Accuracy Improvements & Performance Enhancements
+This month the focus was on refining the integration of heart rate data with the gameplay and optimizing performance. 
+The Arduino project was successfully added to the Unity project folder, consolidating everything in one place for easier management.
+To improve performance, heart rate updates were modified from registering every second to a longer interval, addressing earlier performance issues and reducing lag.
+
+A key feature this month was the implementation of a GUI dropdown menu, allowing players to select their age group. Based on the selected group, the game dynamically adjusts the heart rate zones through a dictionary, modifying gameplay mechanics accordingly.
+
+Accuracy improvements were made by adding timers and adjusting the heart rate threshold for more precise detection. This change ensures smoother and more accurate transitions between states.
+Additionally, heart rate logs are now generated in a .CSV format, providing a detailed log with each entry containing Timestamp, HeartRate, and EnemyState. The logs can be found in AppData/LocalRow/.
+
+### April: Enhanced Player Controls, Fear Factor & FMOD Integration
+The focus this month was on improving player experience and enhancing the horror elements of the game. The player capsule was replaced with a more refined model to provide better controls, offering a smoother and more responsive gameplay experience.
+The enemy character was also replaced with a scarier model, accompanied by animations that enhance the fear factor. These animations are still a work in progress but are already contributing to a more immersive atmosphere.
+
+Key technical improvements were made, including fixing the enemy rotation to properly face both the WalkPoint and the player, ensuring better AI behavior.
+To deepen the horror experience, lighting was introduced with two spotlights:
+A forward-facing flashlight that follows the player, enhancing visibility.
+A spotlight above the player, aiding navigation in dark areas.
+
+In terms of audio, FMOD integration was implemented for added realism, introducing an enemy growl and a player heartbeat sound effect to amplify tension. Additionally, issues with player volume and enemy sound range were fixed, improving sound accuracy.
+
+Code cleanup was performed, with efforts to adhere to Unity C# conventions and resolve the issue where PlayerSound.cs would uncheck itself upon play.
+
+Lastly, adjustments were made to the pulse rate logic, filtering out inaccurate data (like a heart rate of 0 or values outside the expected age group zones), ensuring the heart rate system functions correctly.
+
 
 ## Gantt Chart:
 ![gant chart for ai](https://github.com/user-attachments/assets/34566559-924f-4869-942b-d91dcc65a06c)
