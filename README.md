@@ -1,42 +1,103 @@
 # Heart Rate-Driven Gameplay in a 3D Stealth Game: Exploring Dynamic Difficulty Mechanisms
 
-The artefact is a stealth-based 3D game that challenges player to navigate to the goal while avoiding the Enemy. The Enemy AI uses sound-based mechanics, enabling it to hear, patrol, and chase the player based on auditory cues and heart rate value.
+This artifact presents a 3D stealth-based game where the player must navigate through a level while avoiding detection by the enemy. The enemy AI uses sound-based mechanics, which allow it to hear, patrol, and chase the player depending on auditory cues and the player's heart rate.
 
-## Summary:
+## Summary
 
-Due to a combination of overestimating my abilities, underestimating the complexity of certain tasks and inadequate project management, I was unable to implement all the planned features within the given timeframe. These features relate to multiple NPCs, player animations and assets, and better camera control. However, managing 
+The game features a dynamic AI system where guards patrol, chase, and attack the player based on sight, sound, and heart rate values. The player's heart rate plays a critical role in the detection system, affecting how easily the enemy can detect them. By manipulating the heart rate (through gameplay mechanics like stress or tension), the enemy's behavior is influenced, making the game more challenging as the player’s heart rate increases.
 
-### Implemented:
-- A Pathfinding*: Ensures efficient and dynamic movement for NPCs.
-- Sound Mechanics: Sound plays a key role in triggering guard actions.
-- Dynamic AI: Guards with intelligent behaviour to Chase, Patrol, Attack and detect sound.
-- Stealth Mechanic: Using the left shift key to sneak, the player can navigate around the enemy.
+Due to a combination of overestimating my abilities, underestimating the complexity of certain tasks, and inadequate project management, several planned features could not be implemented within the given timeframe. These include the addition of multiple NPCs, variety of sound and player data. However, the core gameplay mechanics, such as AI behavior, stealth, and dynamic detection, have been successfully integrated which is crucial for the research project. Furthermore, the last minute changes were made due to lack of immersion recieved by participants during the intitial test, for better results, new elements were introduced.
+
+### Controls
+- W, A, S, D -> Basic movement controls for the player.
+- C -> Activate sneak mode, which reduces the player's sound emission but also reduces their movement speed by 3.
+- Space -> Display information about the current game state, including enemy position and detection status.
+
+### Key Features
+- Pathfinding: The AI uses Unity’s NavMeshAgent to navigate and dynamically follow the player based on sight and sound.
+
+- Sound Mechanics: Sound plays a pivotal role in triggering guard behaviors. The enemy will react to the player's noise, making stealth essential for success.
+
+- Dynamic AI: The enemy AI exhibits intelligent behavior, including patrolling, chasing, and attacking based on player detection (sight, sound, and heart rate).
+
+- Stealth Mechanic: The player can use the "Sneak" mechanic (left shift key) to reduce their sound emissions, making it harder for the enemy to detect them, though this reduces movement speed.
+
+- Heart Rate Data: The player's heart rate, based on age, directly impacts the detection behavior of the enemy. Higher heart rates increase the likelihood of detection by the enemy, whereas lower heart rates keep the player more concealed.
 
 To play the game open the "bin" folder and open the .exe". 
 
-### Controls:
-- W, A, S, D -> Basic Movement 
-- C -> Sneak (Decreases Volume)
-- Space -> Display Information
+### Heart Rate Zones and Enemy AI Behavior:
+The heart rate system is driven by the player's age and heart rate zones. The game calculates a player's target heart rate zone based on their age, and this heart rate data influences enemy detection:
+
+1. Heart Rate Zones: The player's heart rate zone is classified as the target heart rate (THR), which varies by age:
+
+- The player’s heart rate will fluctuate depending on stress or other in-game actions.
+- If the player's heart rate exceeds certain thresholds, the enemy will become more alert and will detect the player more easily.
+- Conversely, lower heart rates make it harder for the enemy to detect the player, simulating a more relaxed and less detectable state.
+
+2. Age and Heart Rate Calculation: The player's heart rate zone is dynamically calculated based on the selected age. 
+For example:
+- A 20-year-old will have a target heart rate zone between 120-160 bpm.
+- A 40-year-old will have a target heart rate zone between 108-153 bpm.
+
+3. Impact on Enemy Detection: As the player's heart rate increases (due to stress or proximity to the enemy), the enemy AI becomes more sensitive to the player. This simulates the stress of the player increasing their likelihood of being detected. On the other hand, a relaxed player with a lower heart rate is harder to detect, offering a stealth advantage.
+
+### Heart Rate Data Calculation:
+The heart rate data is managed by the HeartRateData class. The player's heart rate data is stored in a table based on their age, which determines the minimum and maximum heart rate ranges for that age. The heart rate will be tracked and dynamically adjusted during gameplay.
+
+```csharp
+private Dictionary<int, (int min, int max, int maxHR)> heartRateTable = new Dictionary<int, (int, int, int)>
+{
+    { 20, (120, 160, 200) },
+    { 25, (117, 166, 195) },
+    { 30, (114, 162, 190) },
+    { 35, (111, 157, 185) },
+    { 40, (108, 153, 180) },
+    { 45, (105, 149, 175) },
+    { 50, (102, 145, 170) },
+    { 55, (99, 140, 165) },
+    { 60, (96, 136, 160) },
+    { 65, (93, 132, 155) },
+    { 70, (90, 128, 150) }
+};
+```
+
+### Enemy AI State Machine:
+The enemy's behavior is controlled by a simple state machine with three main states:
+
+- Patrol: The enemy randomly moves around the environment, looking for the player. If it detects the player (via sight, sound, or heart rate), it transitions to the chase state.
+- Chase: The enemy actively pursues the player if they are within sight range or making noise. If the player is within attack range, the enemy transitions to the attack state.
+- Attack: The enemy stops moving and attacks the player, decreasing their health. After attacking, the enemy returns to the chase or patrol state.
 
 ### Gameplay
 
-- The Player must avoid the Enemy and reach the goalPoint position before the timer reaches 0. 
-- Sneaking will provide benefit by reducing the volume if within the sound range, or keep it at 0 if pressed before moving. However, it will reduce the Player's speed by 3.
-- If the Player is within the sound range and the volume exceeds the detectionthreshold of 0.7, the Enemy will begin chasing.
+- Objective: The player must avoid detection by the enemy and reach the goal point before the timer runs out. The goal point is located at the gate opposite the starting point, behind a green cube.
 
-- The goalPoint position is located at the gate opposite the starting point, behind the green cube.
+- Stealth Mechanic: Sneaking (using the "C" key) will reduce the volume emitted by the player, which helps avoid detection if the player is within the sound detection range. Sneaking also reduces the player's speed by 3 units.
 
-- Enemy will return to Patrol if the Player is not detected by sight or sound.
-- The Player health is set to 3, when the Player is within the attack range the Enemy will reduce the Player's health by 1.
-- Use the Space key to assist you with key information. 
+- Sound Detection: If the player is within the enemy's sound detection range and their emitted volume exceeds the detection threshold (0.7), the enemy will begin chasing the player.
+
+- Player Health: The player starts with 3 health points. If the enemy attacks the player (when they are within attack range), the player's health will decrease by 1.
+
+- Timer: The player must reach the goal point before the timer reaches zero. If time runs out, the player loses.
+
+- Heart Rate: The player’s heart rate, as selected in the age dropdown, will determine how easily the enemy can detect them based on the player’s stress level. 
+
+Enemy AI Behavior:  
+The enemy will patrol the area, following a random path defined by a NavMeshAgent.
+
+- If the player is in sight range or making noise, the enemy will transition into a chase state and pursue the player.
+
+- If the player is within attack range, the enemy will stop moving and attack, reducing the player's health by 1 each time.
+
+- If the player is not detected by sight or sound, the enemy will return to patrol.
 
 ![image](https://github.com/user-attachments/assets/6cfb0cdf-2b53-404c-9be0-e833270d5bf3)
 ![image](https://github.com/user-attachments/assets/eef1ad72-3b47-4027-abdf-cb6c2af7b722)
 ![image](https://github.com/user-attachments/assets/fa5c0062-6e20-4edc-b1bf-563876bd0d4f)
 ![image](https://github.com/user-attachments/assets/f57a804c-f9e0-43be-ae85-fa533e096de2)
 
-## Project Timeline & Description:
+## Project Timeline & Description
 | Task Name                                    | Start Date  | End Date    | Duration (Days) | Description                                      |
 |----------------------------------------------|-------------|-------------|------------------|----------------------------------------------------|
 | **1. Project Setup**                         | 14/10/2024  | 27/10/2024  | 14               | - Set up Unity project. <br>- Initial environment design. <br>- Basic player movement. |
@@ -112,25 +173,25 @@ Code cleanup was performed, with efforts to adhere to Unity C# conventions and r
 Lastly, adjustments were made to the pulse rate logic, filtering out inaccurate data (like a heart rate of 0 or values outside the expected age group zones), ensuring the heart rate system functions correctly.
 
 
-## Gantt Chart:
+## Gantt Chart
 ![gant chart for ai](https://github.com/user-attachments/assets/34566559-924f-4869-942b-d91dcc65a06c)
 
-## Initial Finite State Machine Diagram:
+## Initial Finite State Machine Diagram
 ![FSM Diagram](https://github.com/user-attachments/assets/66bcd05b-88c8-47d1-9d66-924e9627520a)
 
-## Final FlowCharts:
+## Final FlowCharts
 
 The following images depict a summary for the main logic used in the game.
 
-### Pathfinding
+### Pathfinding:
 
 ### ![flowchart pathfinding](https://github.com/user-attachments/assets/9bba1ed2-c218-47fe-9c07-ebfd90cb9342)
 
-### Enemy AI
+### Enemy AI:
 
 ![flowchart enemy state](https://github.com/user-attachments/assets/aa93c01c-9c2c-4493-8658-775d785afbe0)
 
-## References:
+## References
 
 ### [Pathfinding]
 Sebastian League (2014). A* Pathfinding (E03: algorithm implementation). [online] YouTube. Available at: https://www.youtube.com/watch?v=mZfyt03LDH4&list=PLFt_AvWsXl0cq5Umv3pMC9SPnKjfp9eGW&index=3 [Accessed 3 Jan. 2025].
