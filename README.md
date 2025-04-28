@@ -97,6 +97,10 @@ The enemy will patrol the area, following a random path defined by a NavMeshAgen
 ![image](https://github.com/user-attachments/assets/fa5c0062-6e20-4edc-b1bf-563876bd0d4f)
 ![image](https://github.com/user-attachments/assets/f57a804c-f9e0-43be-ae85-fa533e096de2)
 
+![Image](https://github.com/user-attachments/assets/26132cf6-17aa-4681-9243-c13ec8b6df45)
+![Image](https://github.com/user-attachments/assets/b938e6ba-5e9f-4d4b-ac36-c04f43e89282)
+
+
 ## Project Timeline & Description
 | Task Name                                    | Start Date  | End Date    | Duration (Days) | Description                                      |
 |----------------------------------------------|-------------|-------------|------------------|----------------------------------------------------|
@@ -174,7 +178,7 @@ Lastly, adjustments were made to the pulse rate logic, filtering out inaccurate 
 
 
 ## Gantt Chart
-![gant chart for ai](https://github.com/user-attachments/assets/34566559-924f-4869-942b-d91dcc65a06c)
+![Image](https://github.com/user-attachments/assets/6a7650af-6097-4e77-9d67-b42cb1a084bd)
 
 ## Initial Finite State Machine Diagram
 ![FSM Diagram](https://github.com/user-attachments/assets/66bcd05b-88c8-47d1-9d66-924e9627520a)
@@ -216,7 +220,15 @@ This is GameDev (2023). How to code SMARTER A.I. enemies | Unity Tutorial. [onli
 ### [Camera]
 All Things Game Dev (2022). How To Make An FPS Player In Under A Minute - Unity Tutorial. [online] Available at: https://www.youtube.com/watch?v=qQLvcS9FxnY. [Accessed 3 Jan 2025].
 
-### [Assets]
+### [Assets] / [Sound] 
 Ink Phantom (2018) Polylised - Medieval Desert City | 3D Historic | Unity Asset Store. [online] Available at: https://assetstore.unity.com/packages/3d/environments/historic/polylised-medieval-desert-city-94557 [Accessed 3 Jan 2025].
 
 Effecism (2023). Sound Effects - Footsteps. [online] Available at: https://www.youtube.com/watch?v=mPgGg4MJKKc.[Accessed 3 Jan 2025].
+
+THE_bizniss (2007) beast breathing [online] Available at: https://freesound.org/people/THE_bizniss/sounds/37822/ [Accessed 25 Apr 2025].
+
+Epidemic Sound (2025) Clicky, 83 BPM [online] Available at: https://www.epidemicsound.com/sound-effects/tracks/e375cb2f-dd1a-4201-9053-73af24c7b7d7/ [Accessed 25 Apr 2025].
+
+Mixamo (2025) Parasite L Starkie [online] Available at: https://www.mixamo.com/#/?page=2&query=&type=Character [Accessed 25 Apr 2025].
+
+
